@@ -2,7 +2,7 @@
 # over websockets
 # options(error = recover)
 # options(shiny.reactlog=TRUE)
-options(shiny.trace=TRUE)
+# options(shiny.trace=TRUE)
 
 options(width = 150, digits = 3)
 
