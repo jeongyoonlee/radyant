@@ -93,24 +93,24 @@ observe({
   })
 })
 
-output$downloadData <- downloadHandler(
-  filename = function() { paste(input$datasets,'.',input$saveAs, sep='') },
-  content = function(file) {
+# output$downloadData <- downloadHandler(
+#   filename = function() { paste(input$datasets,'.',input$saveAs, sep='') },
+#   content = function(file) {
 
-    ext <- input$saveAs
-    robj <- input$datasets
+#     ext <- input$saveAs
+#     robj <- input$datasets
 
-    # only save selected columns
-    # assign(robj, getdata()[,input$columns])
-    assign(robj, getdata())
+#     # only save selected columns
+#     # assign(robj, getdata()[,input$columns])
+#     assign(robj, getdata())
 
-    if(ext == 'rda') {
-      save(list = robj, file = file)
-    } else if(ext == 'csv') {
-      write.csv(get(robj), file)
-    }
-  }
-)
+#     if(ext == 'rda') {
+#       save(list = robj, file = file)
+#     } else if(ext == 'csv') {
+#       write.csv(get(robj), file)
+#     }
+#   }
+# )
 
 observe({
   if(is.null(input$removeDataButton) || input$removeDataButton == 0) return()
@@ -204,15 +204,6 @@ output$datasets <- renderUI({
     })
   }
 
-  # if(input$xls_paste != '') {
-  # if(!is.null(input$xls_paste) && input$xls_paste != '') {
-  #   values[['xls_data']] <- as.data.frame(read.table(header=T, text=input$xls_paste, sep="\t"))
-  #   values[['datasetlist']] <- unique(c('xls_data',values[['datasetlist']]))
-  # }
-
-  # clean out the copy-and-paste box once the data has been stored
-  # updateTextInput(session = session, inputId = "xls_paste", label = "", '')
-
   # # loading package data
   # if(input$packData != "") {
   #   if(input$packData != lastLoaded) {
@@ -235,13 +226,20 @@ output$packData <- renderUI({
   selectInput(inputId = "packData", label = "Load package data:", choices = packDataSets, selected = '', multiple = FALSE)
 })
 
+# observe({
+#   if(is.null(input$loadExampleData) || input$loadExampleData == 0) return()
+#   isolate({
+#     values[[paste0(input$datasets,"_descr")]] <- input$man_data_descr
+#     updateCheckboxInput(session = session,  "man_add_descr","Add/edit data description", FALSE)
+#   })
+# })
+
 output$downloadData <- downloadHandler(
   filename = function() { paste(input$datasets,'.',input$saveAs, sep='') },
   content = function(file) {
 
     ext <- input$saveAs
     robj <- input$datasets
-
 
     if(ext == 'rda') {
       if(input$man_data_descr != "") {
@@ -251,9 +249,10 @@ output$downloadData <- downloadHandler(
         description <- input$man_data_descr
         save(list = c(robj,"description"), file = file)
 
-        # isolate({
+        # if(values[[paste0(input$datasets,"_descr")]] != input$man_data_descr) {
+        #   updateCheckboxInput(session = session,  "man_add_descr","Add/edit data description", FALSE)
         #   values[[paste0(input$datasets,"_descr")]] <- input$man_data_descr
-        # })
+        # }
 
       } else {
 

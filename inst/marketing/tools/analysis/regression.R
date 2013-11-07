@@ -235,16 +235,17 @@ plot.regression <- function(result) {
 
 		df <- data.frame(cbind(mod$.fitted,mod[1]))
 		colnames(df) <- c("x","y")
-		plots[[1]] <- ggplot(df, aes(x=x, y=y)) + geom_point() + stat_smooth(method="lm", se=TRUE) +
-			labs(list(title = "Actual vs Fitted", x = "Fitted values", y = "Actual values"))
+		# plots[[1]] <- ggplot(df, aes(x=x, y=y)) + geom_point() + stat_smooth(method="lm", se=TRUE) +
+		plots[[1]] <- ggplot(df, aes(x=x, y=y)) + geom_point() + geom_abline(linetype = 'dotdash') +
+			geom_smooth(size = .75, linetype = "dotdash") + labs(list(title = "Actual vs Fitted", x = "Fitted values", y = "Actual values"))
 
-		plots[[2]] <- qplot(.fitted, .resid, data = mod) + geom_hline(yintercept = 0) + geom_smooth(se = FALSE) +
+		plots[[2]] <- qplot(.fitted, .resid, data = mod) + geom_smooth(size = .75, linetype = "dotdash") +
 			labs(list(title = "Residuals vs Fitted", x = "Fitted values", y = "Residuals"))
 
-		plots[[3]] <- qplot(y=.resid, x=seq_along(.resid), data = mod) + geom_point() + geom_smooth(se = FALSE) +
-			labs(list(title = "Residuals vs Row order", x = "Row order", y = "Residuals"))
+		plots[[3]] <- qplot(y=.resid, x=seq_along(.resid), data = mod) + geom_point() + 
+			geom_smooth(size = .75, linetype = "dotdash") + labs(list(title = "Residuals vs Row order", x = "Row order", y = "Residuals"))
 
-		plots[[4]] <- qplot(sample =.stdresid, data = mod, stat = "qq") + geom_abline() +
+		plots[[4]] <- qplot(sample =.stdresid, data = mod, stat = "qq") + geom_abline(linetype = 'dotdash') +
 			labs(list(title = "Normal Q-Q", x = "Theoretical quantiles", y = "Standardized residuals"))
 
 		p <- suppressWarnings(suppressMessages(do.call(grid.arrange, c(plots, list(ncol = 2)))))
@@ -255,7 +256,14 @@ plot.regression <- function(result) {
 	if(input$reg_plots == "scatterlist") {
 		plots <- list()
 		# for(i in input$reg_var2) plots[[i]] <- ggplot(dat, aes_string(x=i, y=input$reg_var1)) + geom_point() + geom_smooth(method = "lm", size = .75, linetype = "dotdash")
-		for(i in input$reg_var2) plots[[i]] <- ggplot(dat, aes_string(x=i, y=input$reg_var1)) + geom_point() + geom_smooth(size = .75, linetype = "dotdash")
+		# for(i in input$reg_var2) plots[[i]] <- ggplot(dat, aes_string(x=i, y=input$reg_var1)) + geom_point() + geom_smooth(size = .75, linetype = "dotdash")
+		for(i in input$reg_var2) { 
+			if(getdata_class()[i] == 'factor') {
+				plots[[i]] <- ggplot(dat, aes_string(x=i, y=input$reg_var1)) + geom_boxplot(fill = 'blue', alpha = .3)
+			} else {
+				plots[[i]] <- ggplot(dat, aes_string(x=i, y=input$reg_var1)) + geom_point() + geom_smooth(size = .75, linetype = "dotdash")
+			}
+		}
 		p <- suppressWarnings(suppressMessages(do.call(grid.arrange, c(plots, list(ncol = 2)))))
 	}
 
@@ -273,7 +281,7 @@ plot.regression <- function(result) {
 			if(getdata_class()[i] == 'factor') {
 				plots[[i]] <- ggplot(rdat, aes_string(x=i, y="residuals")) + geom_boxplot(fill = 'blue', alpha = .3)
 			} else {
-				plots[[i]] <- ggplot(rdat, aes_string(x=i, y="residuals")) + geom_point() + geom_smooth(se = FALSE)
+				plots[[i]] <- ggplot(rdat, aes_string(x=i, y="residuals")) + geom_point() + geom_smooth(size = .75, linetype = "dotdash")
 			}
 		}
 		p <- suppressWarnings(suppressMessages(do.call(grid.arrange, c(plots, list(ncol = 2)))))

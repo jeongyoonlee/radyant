@@ -67,7 +67,7 @@ libs <- c("shiny", "knitr", "Hmisc", "car", "tools", "gridExtra", "markdown", "R
 
 if(!'shiny' %in% rownames(installed.packages()) || packageVersion('shiny') < '0.8') {
   # make sure they have .80 or greater installed
-  install.packages('shiny')
+  install.packages('shiny', dependencies = TRUE)
 }
 
 available <- libs %in% rownames(installed.packages())
@@ -91,4 +91,4 @@ require(shiny)
 # getting the Radyant files
 suppressWarnings(update_app('http://vnijs.rady.ucsd.edu/site_media/R/radyant/inst/marketing/'))
 
-q("ask")
+q("no")
