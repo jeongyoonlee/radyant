@@ -15,11 +15,7 @@ Interactive data analytics using [R](http://www.r-project.org/) and [Shiny](http
 - Required: A modern browser (e.g., Chrome, Firefox, or Safari). Internet Explorer is not supported.
 - Suggested: [Rstudio](http://www.rstudio.com/ide/download/)
 
-Start R(studio) and copy-and-paste the commands below to create a directory 'radyant' on your desktop:
-
-	source('http://vnijs.rady.ucsd.edu/site_media/R/update.R')
-
-Once the installation has completed use the command below to start the app:
+To use the app click the 'Download ZIP' button and unzip the downloaded file to, for example, your Desktop. When you start the app for the first time required package will be installed. To start the app copy and paste the commands below into the R terminal:
 
 	# on windows
 	shiny::runApp('~/../Desktop/radyant/')
