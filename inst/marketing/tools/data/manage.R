@@ -61,18 +61,20 @@ observe({
   isolate({
     path <- "www/examples/"
     examples <- list.files(path)
+   
 
     for(ex in examples) {
-
       ext <- file_ext(ex)
-      # robjname <- sub(paste0(".",ext),"",ex)
-      # filename <- sub(paste0(".",ext),"",ex)
-
       loadUserData(ex, paste0(path,ex))
+    }
 
-      # robj <- load(paste0(path,ex))
-      # values[[robjname]] <- data.frame(get(robj))  # only work with data.frames
-      # values[['datasetlist']] <- unique(c(robjname,values[['datasetlist']]))
+    # only available for my students
+    path <- "www/MGT475_data/"
+    examples <- list.files(path)
+
+    for(ex in examples) {
+      ext <- file_ext(ex)
+      loadUserData(ex, paste0(path,ex))
     }
 
     # updateRadioButtons(session = session, inputId = "dataType", label = "Load data:", c(".rda" = "rda", ".csv" = "csv", "clipboard" = "clipboard", "examples" = "examples"), selected = ".rda")
