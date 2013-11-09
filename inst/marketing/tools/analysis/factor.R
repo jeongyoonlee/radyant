@@ -203,7 +203,7 @@ fullFactor <- reactive({
 	fres
 })
 
-# save cluster membership when action button is pressed
+# save factor scores when action button is pressed
 observe({
 	if(is.null(input$fac_savescores) || input$fac_savescores == 0) return()
 	isolate({

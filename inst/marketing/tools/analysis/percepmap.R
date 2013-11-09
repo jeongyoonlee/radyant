@@ -50,7 +50,11 @@ ui_pmap <- function() {
 	  	uiOutput("pmap_plot"),
  	    numericInput("pmap_scaling", "Arrow scaling factor:", 2.4, .5, 4, .1)
     ),
-  	uiOutput("pmap_dim_number")
+  	uiOutput("pmap_dim_number"),
+ 	 	conditionalPanel(condition = "input.analysistabs == 'Summary'",
+    	numericInput("pmap_cutoff", label = "Format loadings matrix:", min = 0, max = 1, value = 0, step = .05),
+	    actionButton("pmap_savescores", "Save scores")
+	  )
  		),
 		helpModal('Attribute based maps','mds',includeMarkdown("tools/help/percepmap.md"))
 	)
@@ -164,24 +168,32 @@ summary.pmap <- function(result) {
 
 	cat("-- Attribute based perceptual map --\n")
 	f.res <- result$f.res
-
-	communalities <- as.data.frame(f.res$communality)
-	colnames(communalities) <- "communalities"
-	cat("\nAttribute communalities:\n")
-	print(communalities, digits = 3)
-
-	cat("\nAttribute - Factor loadings:\n")
-	print(f.res$loadings, cutoff = 0)
-	### print(f.res$loadings, cutoff = .5)
-
 	out <- result$out
 
 	cat("\nBrand - Factor scores:\n")
 	print(out$scores, digits = 3)
 
+	cat("\nAttribute - Factor loadings:\n")
+	# print(f.res$loadings, cutoff = 0)
+	print(f.res$loadings, cutoff = input$pmap_cutoff, digits = 3)
+	
 	if(!is.null(input$pmap_pref)) {
 		cat("\nPreference correlations:\n")
 		print(out$pref.cor, digits = 3)
 	}
+
+	communalities <- as.data.frame(f.res$communality)
+	colnames(communalities) <- "communalities"
+	cat("\nAttribute communalities:\n")
+	print(communalities, digits = 3)
 }
 
+# save factor scores when action button is pressed
+observe({
+	if(is.null(input$pmap_savescores) || input$pmap_savescores == 0) return()
+	isolate({
+		if(is.character(pmap())) return()
+		facscores <- data.frame(pmap()$out[['scores']])
+		changedata(facscores, paste0("fac",1:input$pmap_dim_number))
+	})
+})
