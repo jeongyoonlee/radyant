@@ -91,7 +91,7 @@ ui_fullFactor <- function() {
     selectInput("fac_method", label = "Method:", choices = fac_method, selected = fac_method[1], multiple = FALSE),
     numericInput("fac_number", label = "Number of factors:", min = 1, value = 1),
 
-    HTML("<label>Format loadings matrix:</label>"),
+    HTML("<label>Format loadings:</label>"),
 		div(class="row-fluid",
     	div(class="span6", numericInput("fac_cutoff", label = "", min = 0, max = 1, value = 0, step = .05) ),
       div(class="span6", checkboxInput("fac_condFormat", "Conditional", value = FALSE) )
@@ -168,7 +168,7 @@ plot.fullFactor <- function(result) {
   	}
 	}
 
-	print(do.call(grid.arrange, c(plots, list(ncol = 1))))
+	print(do.call(grid.arrange, c(plots, list(ncol = min(2,length(plots))))))
 }
 
 fullFactor <- reactive({
@@ -197,9 +197,11 @@ fullFactor <- reactive({
 
 	# nr.plots <- factorial(c(nrFac,2))
 	# fres$plotHeight <- 650 * (nr.plots[1] / nr.plots[2])
+	# nr.plots <- (nrFac * (nrFac - 1)) / 2
 	nr.plots <- (nrFac * (nrFac - 1)) / 2
-	fres$plotHeight <- 400 * nr.plots
-	fres$plotWidth <- 400
+	# fres$plotHeight <- 400 * nr.plots
+	ifelse(nr.plots > 2, fres$plotHeight <- 350 * ceiling(nr.plots/2), fres$plotHeight <- 350)
+	ifelse(nr.plots > 1, fres$plotWidth <- 700, fres$plotWidth <- 350)
 	fres
 })
 

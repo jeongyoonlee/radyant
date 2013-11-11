@@ -4,6 +4,14 @@ output$tr_columns <- renderUI({
 	selectInput("tr_columns", "Select column(s):", choices  = as.list(cols), selected = NULL, multiple = TRUE)
 })
 
+output$tr_reorder_levs_rui <- renderUI({
+	if(is.null(input$tr_columns)) return()
+	isFct <- "factor" == getdata_class()[input$tr_columns[1]]
+  if(!isFct) return()
+  dat <- getdata()
+  returnOrder("tr_reorder_levs", levels(dat[,input$tr_columns[1]]))	
+})
+
 revFactorOrder <- function(x) {
 	x <- as.factor(x)
 	factor(x, levels=rev(levels(x)))
@@ -73,13 +81,15 @@ trans_options <- list("None" = "", "Log" = "log", "Square" = "sq", "Square-root"
 	"Invert" = "inv", "Median split" = "msp", "Deciles" = "dec", "As factor" = "fct",  "As number" = "num", "As integer" = "int", "As character" = "ch", "Rev factor order" = "rfct",
 	"As date (mdy)" = "d_mdy", "As date (dmy)" = "d_dmy", "As date (ymd)" = "d_ymd")
 
+trans_types <- list("Change" = "change", "Create" = "create", "Clipboard" = "clip", "Recode" = "recode", "Rename" = "rename", "Reorder columns" = "reorder_cols", "Reorder levels" = "reorder_levs", "Remove" = "remove")
+
 ui_Transform <- function() {
 	# Inspired by Ian Fellow's transform ui in JGR/Deducer
   list(wellPanel(
     uiOutput("tr_columns"),
 
-   	radioButtons("tr_changeType", "", c("Change" = "change", "Create" = "create", "Clipboard" = "clip", "Recode" = "recode", "Rename" = "rename", "Remove" = "remove"), selected = "Change"),
-   	# radioButtons("tr_changeType", "", c("Change" = "change", "Rename" = "rename", "Add" = "add", "Recode" = "recode", "Remove" = "remove"), selected = "Change"),
+   	# radioButtons("tr_changeType", "", c("Change" = "change", "Create" = "create", "Clipboard" = "clip", "Recode" = "recode", "Rename" = "rename", "Reorder" = "reorder", "Remove" = "remove"), selected = "Change"),
+    selectInput("tr_changeType", "Choose type:", trans_types, selected = "Change"),
     conditionalPanel(condition = "input.tr_changeType == 'change'",
 	    selectInput("tr_transfunction", "Change columns:", trans_options)
     ),
@@ -98,13 +108,27 @@ ui_Transform <- function() {
 	    # textInput("tr_recode", "Recode (e.g., lo:20 = 1):", ''), 
   	  # actionButton("tr_recode_sub", "Go")
     ),
+
     conditionalPanel(condition = "input.tr_changeType == 'rename'",
 	   	returnTextInput("tr_rename", "Rename (separate by ','):", '')
 	   	# textInput("tr_rename", "Rename (separate by ','):", '')
     ),
 
     # actionButton("transfix", "Edit variables in place") # using the 'fix(mtcars)' to edit the data 'inplace'. Looks great from R-ui, not so great from Rstudio
-    actionButton("addtrans", "Save changes")
+    actionButton("addtrans", "Save changes"),
+
+    conditionalPanel(condition = "input.tr_changeType == 'reorder_cols'",
+    	br(),
+    	HTML("<label>Reorder (drag-and-drop):</label>"),
+	    returnOrder("tr_reorder_cols", varnames())
+    ),
+
+    conditionalPanel(condition = "input.tr_changeType == 'reorder_levs'",
+    	br(),
+    	HTML("<label>Reorder (drag-and-drop):</label>"),
+	    # returnOrder("tr_reorder_levs", varnames())
+	    uiOutput("tr_reorder_levs_rui")
+    )
   	), 
 		helpModal('Transform','transform',includeMarkdown("tools/help/transform.md"))
 	)
@@ -113,120 +137,102 @@ ui_Transform <- function() {
 transform_main <- reactive({
 
 	if(input$datatabs != 'Transform') return()
-	if(is.null(input$tr_copyAndPaste) || is.null(input$tr_transform)) return()
-	# if(is.null(input$tr_transform)) return()
-	if(is.null(input$datasets) || (is.null(input$tr_columns) && input$tr_copyAndPaste == '' && input$tr_transform == '')) return()
-	# if(is.null(input$datasets) || (is.null(input$tr_columns) && input$tr_transform == '')) return()
+	if(is.null(input$tr_changeType)) return()
+	if(is.null(input$datasets)) return()
 
 	dat <- getdata()
+
+	if(input$tr_changeType == 'reorder_cols') {
+    if(is.null(input$tr_reorder_cols)) {
+      ordVars <- colnames(dat)
+ 	  } else {
+   	  ordVars <- input$tr_reorder_cols
+    }
+ 	  return(dat[,ordVars, drop = FALSE])
+  }
+
 	if(!is.null(input$tr_columns)) {
 
 		if(!all(input$tr_columns %in% colnames(dat))) return()
 		dat <- data.frame(dat[, input$tr_columns, drop = FALSE])
-		if(input$tr_transfunction != '' && input$tr_transfunction != 'remove') {
+		if(input$tr_transfunction != '') {
 			cn <- c(colnames(dat),paste(input$tr_transfunction,colnames(dat), sep="."))
 			dat <- cbind(dat,colwise(input$tr_transfunction)(dat))
 			colnames(dat) <- cn
 		}
 	}
 
-	if(input$tr_recode != '') {
+	if(!is.null(input$tr_columns) & input$tr_changeType == 'reorder_levs') {
+    if(!is.null(input$tr_reorder_levs)) {
+    	isFct <- "factor" == getdata_class()[input$tr_columns[1]]
+		  if(isFct) dat[,input$tr_columns[1]] <- factor(dat[,input$tr_columns[1]], levels = input$tr_reorder_levs)
+    }
+  }
 
-		# input <- list()
-		# input$tr_recode <- "'<25' = '<35'; '25-34' = '<35'; '35-44' = '35-54'; '45-54' = '35-54'; '55-64' = '>54'; '>64' = '>54'"
-		# dat <- tulsa_age
-		# input$tr_columns <- 'age'
-		# recom <- input$tr_recode
-		# recom <- gsub(" ", "", recom)
-		# recom <- gsub("\"","\'", recom)
-		# recode(dat[,input$tr_columns[1]],recom)
-		# do.call(car::recode, list(dat[,input$tr_columns[1]],recom))
-		# newvar <- try(do.call(car::recode, list(dat[,input$tr_columns[1]],parse(text = recom))), silent = TRUE)
+	if(input$tr_changeType ==  'recode') {
+		if(input$tr_recode != '') {
 
-		recom <- input$tr_recode
-		recom <- gsub(" ", "", recom)
-		recom <- gsub("\"","\'", recom)
+			recom <- input$tr_recode
+			recom <- gsub(" ", "", recom)
+			recom <- gsub("\"","\'", recom)
 
-		# newvar <- try(do.call(car::recode, list(dat[,input$tr_columns[1]],parse(text = recom))), silent = TRUE)
-		newvar <- try(do.call(car::recode, list(dat[,input$tr_columns[1]],recom)), silent = TRUE)
-		if(!is(newvar, 'try-error')) {
+			newvar <- try(do.call(car::recode, list(dat[,input$tr_columns[1]],recom)), silent = TRUE)
+			if(!is(newvar, 'try-error')) {
 
-			cn <- c(colnames(dat),paste("rc",input$tr_columns[1], sep="."))
-			dat <- cbind(dat,newvar)
-			colnames(dat) <- cn
-			return(dat)
+				cn <- c(colnames(dat),paste("rc",input$tr_columns[1], sep="."))
+				dat <- cbind(dat,newvar)
+				colnames(dat) <- cn
+				return(dat)
+			}
 		}
 	}
 
-	# if(input$tr_changeType == 'clip') {
-	# 	if(is.null(input$pasteClipData) || input$pasteClipData == 0) return()
-	# 	isolate({
-	# 	  os_type <- .Platform$OS.type
-	# 	  if (os_type == 'windows') {
-		    
-	# 	    cpdat <- try(read.table("clipboard", header = TRUE, sep = '\t'), silent = TRUE)
-
-	# 	    # if(is(dat, 'try-error')) 
-	# 	    	# dat <- c("Data from clipboard was not well formatted. Try exporting the data to csv format.")
-	# 		  # write.table("", "clipboard", sep="\t", row.names=FALSE)
-	# 	  } else { 
-
-	# 	    cpdat <- try(read.table(pipe("pbpaste"), header = TRUE, sep = '\t'), silent = TRUE)
-	# 	    # if(is(dat, 'try-error')) 
-	# 	    	# dat <- c("Data from clipboard was not well formatted. Try exporting the data to csv format.")
-	#       # write.table("", file = pipe("pbcopy"), row.names = FALSE, sep = '\t')
-	# 	  }
-	# 		cpname <- names(cpdat)
-	# 		if(sum(cpname %in% colnames(dat)) > 0) names(cpdat) <- paste('cp',cpname,sep = '.')
-	# 		if(is.null(input$tr_columns)) return(cpdat)
-	# 		if(nrow(cpdat) == nrow(dat)) dat <- cbind(dat,cpdat)
-	# 	})
-	# }
-
-	if(input$tr_copyAndPaste != '') {
-		cpdat <- read.table(header=T, text=input$tr_copyAndPaste)
-		cpname <- names(cpdat)
-		if(sum(cpname %in% colnames(dat)) > 0) names(cpdat) <- paste('cp',cpname,sep = '.')
-		if(is.null(input$tr_columns)) return(cpdat)
-		if(nrow(cpdat) == nrow(dat)) dat <- cbind(dat,cpdat)
+	if(input$tr_changeType == 'clip') {
+		if(input$tr_copyAndPaste != '') {
+			cpdat <- read.table(header=T, text=input$tr_copyAndPaste)
+			cpname <- names(cpdat)
+			if(sum(cpname %in% colnames(dat)) > 0) names(cpdat) <- paste('cp',cpname,sep = '.')
+			if(is.null(input$tr_columns)) return(cpdat)
+			if(nrow(cpdat) == nrow(dat)) dat <- cbind(dat,cpdat)
+		}
 	}
 
-	if(!is.null(input$tr_columns) && input$tr_rename != '') {
-		rcom <- unlist(strsplit(gsub(" ","",input$tr_rename), ","))
-		rcom <- rcom[1:length(input$tr_columns)]
-		names(dat)[1:length(rcom)] <- rcom
+	if(input$tr_changeType == 'rename') {
+		if(!is.null(input$tr_columns) && input$tr_rename != '') {
+			rcom <- unlist(strsplit(gsub(" ","",input$tr_rename), ","))
+			rcom <- rcom[1:length(input$tr_columns)]
+			names(dat)[1:length(rcom)] <- rcom
+		}
 	}
 
-	if(input$tr_transform != '') {
-		recom <- input$tr_transform
-		recom <- gsub(" ", "", recom)
-		recom <- gsub("\"","\'", recom)
+	if(input$tr_changeType == 'create') {
+		if(input$tr_transform != '') {
+			recom <- input$tr_transform
+			recom <- gsub(" ", "", recom)
+			recom <- gsub("\"","\'", recom)
 
-		fullDat <- getdata()
-		newvar <- try(do.call(within, list(fullDat,parse(text = recom))), silent = TRUE)
+			fullDat <- getdata()
+			newvar <- try(do.call(within, list(fullDat,parse(text = recom))), silent = TRUE)
 
-		# fullDat <- mtcars
-		# recom = "x = z + y"
-		# newvar <- try(do.call(within, list(fullDat,parse(text = recom))), silent = TRUE)
+			if(!is(newvar, 'try-error')) { 
+				nfull <- ncol(fullDat)
+				nnew <- ncol(newvar)
 
-		if(!is(newvar, 'try-error')) { 
-			nfull <- ncol(fullDat)
-			nnew <- ncol(newvar)
-
-			# this won't work properly if the transform command creates a new variable
-			# and also overwrites an existing one
-			if(nfull < nnew) newvar <- newvar[,(nfull+1):nnew, drop = FALSE]
-			if(is.null(input$tr_columns)) return(newvar)
-			cn <- c(colnames(dat),colnames(newvar))
-			dat <- cbind(dat,newvar)
-			colnames(dat) <- cn
-		} else if(is.null(input$tr_columns)) {
-			# the 'create' command did not compile so if there were
-			# no variables selected show ... nothing
-			# print(paste0("Create command:", recom, "did not create a new variable. Please try again."))
-		 	# updateTextInput(session = session, inputId = "tr_transform", label = "Create (e.g., y = x - z):", '')
-			return(paste0("Create command: ", recom, " did not create a new variable. Please try again."))
-			# return()
+				# this won't work properly if the transform command creates a new variable
+				# and also overwrites an existing one
+				if(nfull < nnew) newvar <- newvar[,(nfull+1):nnew, drop = FALSE]
+				if(is.null(input$tr_columns)) return(newvar)
+				cn <- c(colnames(dat),colnames(newvar))
+				dat <- cbind(dat,newvar)
+				colnames(dat) <- cn
+			} else if(is.null(input$tr_columns)) {
+				# the 'create' command did not compile so if there were
+				# no variables selected show ... nothing
+				# print(paste0("Create command:", recom, "did not create a new variable. Please try again."))
+			 	# updateTextInput(session = session, inputId = "tr_transform", label = "Create (e.g., y = x - z):", '')
+				return(paste0("Create command: ", recom, " did not create a new variable. Please try again."))
+				# return()
+			}
 		}
 	}
 
@@ -263,7 +269,8 @@ output$transform_summary <- renderPrint({
 
 	if(sum(isNum) > 0) {
 		cat("\nSummarize numeric variables:\n")
-		print(describe(dat[,isNum]))
+		# print(describe(dat[,isNum])[,c("n","mean","sd","median","min","max","range","skew","kurtosis","se")])
+		print(describe(dat[,isNum])[,c("n","mean","median","min","max","range","sd","se","skew","kurtosis")])
 	}
 	if(sum(isFct) > 0) {
 		cat("\nSummarize factors:\n")
@@ -286,9 +293,12 @@ observe({
 			changedata(addColName = colnames(dat))
 		} else if(input$tr_changeType == 'rename') {
 			changedata_names(input$tr_columns, colnames(dat))
-		} else {
+		} else if(input$tr_changeType == 'reorder_cols') {
+	  	values[[input$datasets]] <- values[[input$datasets]][,input$tr_reorder_cols]
+	  } else {
 			changedata(dat, colnames(dat))
 		}
+
 
 		# reset the values once the changes have been applied
 	 	updateTextInput(session = session, inputId = "tr_transform", label = "Create (e.g., y = x - z):", '')

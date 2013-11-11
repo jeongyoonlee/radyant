@@ -49,9 +49,10 @@ ui_mds <- function() {
   	uiOutput("mds_dis"),
   	uiOutput("mds_dim_number"),
  	 	conditionalPanel(condition = "input.analysistabs == 'Plots'",
+ 	 		numericInput("mds_fontsz", "Font size:", 1, .5, 4, .1),
 	  	uiOutput("mds_rev_dim")
     )),
-		helpModal('(Dis)similarity based maps (MDS)','mds',includeMarkdown("tools/help/mds.md"))
+		helpModal('(Dis)similarity based maps (MDS)','mds',includeHTML("tools/help/mds.html"))
 	)
 }
 
@@ -86,9 +87,11 @@ plot.mds <- function(result) {
 	for(i in 1:(out$nr.dim-1)) {
 		for(j in (i+1):out$nr.dim) {
 			plot(c(-out$lim,out$lim),type = "n",xlab='', ylab='', axes = F, asp = 1, yaxt = 'n', xaxt = 'n', ylim=c(-out$lim, out$lim), xlim=c(-out$lim,out$lim))
-			title(paste("Perceptual Map for",input$datasets,"data\nDimension",i,"vs Dimsension",j))
-			points(out$points[,i], out$points[,j], col="darkgreen", pch = 16)
-			text(out$points[,i], out$points[,j], out$labels, col=rainbow(out$nr.lev,start=.6,end=.1), cex = out$fsize, adj = c(0.4,-.4))
+			title(paste("Dimension",i,"vs Dimension",j), cex.main = input$mds_fontsz)
+			points(out$points[,i], out$points[,j], col="darkgreen", pch = 16, cex = .6)
+
+			# text(out$points[,i], out$points[,j], out$labels, col=rainbow(out$nr.lev,start=.6,end=.1), cex = out$fsize, adj = c(0.4,-.4))
+			textplot(out$points[,i], out$points[,j]+(.04*out$lim), out$labels, col=rainbow(out$nr.lev,start=.6,end=.1), cex = input$mds_fontsz, new = FALSE)
 			abline(v=0, h=0)
 		}
 	}

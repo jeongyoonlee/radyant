@@ -86,7 +86,8 @@ output$expl_data <- renderPrint({
 
 		if(sum(isNum) > 0) {
 			cat("\nSummarize numeric variables:\n")
-			print(describe(dat[isNum]))
+			# print(describe(dat[isNum]))
+			print(describe(dat[isNum])[,c("n","mean","median","min","max","range","sd","se","skew","kurtosis")])
 		}
 		if(sum(isFct) > 0) {
 			cat("\nSummarize factors:\n")

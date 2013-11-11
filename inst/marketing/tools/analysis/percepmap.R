@@ -48,15 +48,18 @@ ui_pmap <- function() {
   	uiOutput("pmap_pref"),
  	 	conditionalPanel(condition = "input.analysistabs == 'Plots'",
 	  	uiOutput("pmap_plot"),
- 	    numericInput("pmap_scaling", "Arrow scaling factor:", 2.4, .5, 4, .1)
+ 	    div(class="row-fluid",
+	    	div(class="span6", numericInput("pmap_scaling", "Arrow scaling:", 2.4, .5, 4, .1)),
+	      div(class="span6", numericInput("pmap_fontsz", "Font size:", 1, .5, 4, .1))
+	    )
     ),
   	uiOutput("pmap_dim_number"),
  	 	conditionalPanel(condition = "input.analysistabs == 'Summary'",
-    	numericInput("pmap_cutoff", label = "Format loadings matrix:", min = 0, max = 1, value = 0, step = .05),
+    	numericInput("pmap_cutoff", label = "Loadings cutoff:", min = 0, max = 1, value = 0, step = .05),
 	    actionButton("pmap_savescores", "Save scores")
 	  )
  		),
-		helpModal('Attribute based maps','mds',includeMarkdown("tools/help/percepmap.md"))
+		helpModal('Attribute based maps','mds',includeHTML("tools/help/percepmap.html"))
 	)
 }
 
@@ -64,45 +67,52 @@ plot.pmap <- function(result) {
 
 	out <- result$out
 
-	lbf <- 1.2
-	pbf <- 1.4
-
 	std.pc <- input$pmap_scaling * out$pref.cor
 	std.m <- input$pmap_scaling * out$loadings
 	std.scores <- out$scores
-	max.max <- max(abs(std.m),abs(std.scores),abs(std.pc)) * pbf	# adding a buffer so the labels don't move off the screen
+	lab_buf <- 1.1
+	max.max <- max(abs(std.m),abs(std.scores),abs(std.pc)) * 1.1	# adding a buffer so the labels don't move off the screen
 
 	if(out$nr.dim == 3) {
 		op <- par(mfrow=c(3,1))
+		# op <- par(mfrow=c(1,1))
 	} else {
 		op <- par(mfrow=c(1,1))
 	}
 
 	for(i in 1:(out$nr.dim-1)) {
 			for(j in (i+1):out$nr.dim) {
+
+				# max.max <- max(abs(std.m[,c(i,j)])) * 1.1	# adding a buffer so the labels don't move off the screen
+
 				plot(c(-max.max,max.max),type = "n",xlab='', ylab='', axes = F, asp = 1, yaxt = 'n', xaxt = 'n', ylim=c(-max.max, max.max), xlim=c(-max.max,max.max))
-				title(paste("Perceptual Map for",input$datasets,"data\nDimension",i,"vs Dimsension",j))
+				# title(paste("Perceptual Map for",input$datasets,"data\nDimension",i,"vs Dimsension",j))
+				title(paste("Dimension",i,"vs Dimension",j), cex.main = input$pmap_fontsz)
 				abline(v=0, h=0)
 
 				if("brand" %in% input$pmap_plot) {
-					points(std.scores[,i], std.scores[,j], col="darkgreen", pch = 16)
-					text(std.scores[,i], std.scores[,j], out$brand.names, col="darkgreen", cex = 1.2, adj = c(-.1,-.2))
+					points(std.scores[,i], std.scores[,j], col="darkgreen", pch = 16, cex = .6)
+					# text(std.scores[,i], std.scores[,j], out$brand.names, col="darkgreen", cex = 1.2, adj = c(-.1,-.2))
+					textplot(std.scores[,i], std.scores[,j]*lab_buf, out$brand.names, cex = input$pmap_fontsz, col="darkgreen", new = FALSE)
 				}
 			
 				if("attr" %in% input$pmap_plot) {
-					text(lbf*std.m[,i], std.m[,j], input$pmap_attr, col="darkblue", cex = 1.2, adj=c(0.5,-.3))
+					# text(lbf*std.m[,i], std.m[,j], input$pmap_attr, col="darkblue", cex = 1.2, adj=c(0.5,-.3))
+					textplot(std.m[,i]*lab_buf, std.m[,j]*lab_buf, input$pmap_attr, cex = input$pmap_fontsz, col = "darkblue", new = FALSE)
 					# add arrows
 					for (k in input$pmap_attr) 
-						arrows(0,0, x1=std.m[k,i], y1=std.m[k,j], col="orange", cex=1, length=.1)
+						# arrows(0,0, x1=std.m[k,i], y1=std.m[k,j], col="borange", cex=1, length=.1)
+						arrows(0,0, x1=std.m[k,i], y1=std.m[k,j], lty='dashed', length=.05)
 
 					# http://sape.inf.usi.ch/quick-reference/ggplot2/geom_segment
 					# http://docs.ggplot2.org/0.9.3.1/geom_abline.html
 				}
 
 				if("pref" %in% input$pmap_plot) {
-					text(lbf*std.pc[,i], std.pc[,j], input$pmap_pref, col="darkred", cex = 1.2,adj=c(0.5,-.3))
+					# text(lbf*std.pc[,i], std.pc[,j], input$pmap_pref, col="darkred", cex = 1.2,adj=c(0.5,-.3))
+					textplot(std.pc[,i]*lab_buf, std.pc[,j]*lab_buf, input$pmap_pref, cex = input$pmap_fontsz, col="darkred", new = FALSE)
 					for (l in input$pmap_pref) 
-						arrows(0,0, x1=std.pc[l,i], y1=std.pc[l,j], col="red", length=.1)
+						arrows(0,0, x1=std.pc[l,i], y1=std.pc[l,j], lty='dashed', col="red", length=.05)
 				}
 			}
 		}
@@ -123,8 +133,6 @@ pmap <- reactive({
 	nr.dim <- as.numeric(input$pmap_dim_number)
 	nr.attr <- length(input$pmap_attr)
 	# sf <- as.numeric(state$sf)
-	# pbf <- as.numeric(state$pbf)
-	# lbf <- as.numeric(state$lbf)
 
 	f.data <- dat[,input$pmap_attr]
 	brands <- dat[,input$pmap_brand]

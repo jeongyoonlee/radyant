@@ -10,7 +10,10 @@ changedata <- function(addCol = list(NULL), addColName = "") {
   		return(values[[input$datasets]][,addColName] <- addCol)
   	} else if(nrow(getdata()) == nrow(addCol)) {
 	  	return(values[[input$datasets]][,addColName] <- addCol)
-  	}
+  	} 
+  	# else {
+	  # 	return(values[[input$datasets]][,addColName] <- addCol)
+	  # }
   # })
 }
 

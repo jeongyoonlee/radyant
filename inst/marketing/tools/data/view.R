@@ -8,7 +8,6 @@ ui_View <- function() {
       uiOutput("columns"), 
      	# uiOutput("view_order"), checkboxInput("view_order_desc", "DESC", value = FALSE),
       returnTextInput("dv_select", "Subset (e.g., mpg > 20 & vs == 1)", '')
-      # uiOutput("nrRows")
     ),
     helpModal('View','view',includeMarkdown("tools/help/view.md"))
   )
@@ -35,21 +34,10 @@ output$dataviewer <-renderDataTable({
       if(is.data.frame(seldat)) {
         dat <- seldat
         seldat <- NULL
-        # showing all rows that fit the condition
-        # updateSliderInput(session = session, "nrRows", "Rows to show:", value = c(1,nrow(dat)))
       }
     }
   }
 
-  # order data
-  # if(!is.null(input$view_order) && input$view_order != "None") {
-  #   indx <- order(dat[,input$view_order], decreasing = input$view_order_desc)
-  #   dat <- dat[indx,,drop = FALSE]
-  # }
-
-  # Show only the selected columns and no more than 50 rows at a time
-  # nr <- min(input$nrRows[2],nrow(dat))
-  # dat <- data.frame(dat[input$nrRows[1]:nr, input$columns, drop = FALSE])
   dat <- data.frame(dat[, input$columns, drop = FALSE])
   dat
 
@@ -57,14 +45,4 @@ output$dataviewer <-renderDataTable({
   # html <- sub("<TABLE border=1>","<table class='table table-condensed table-hover'>", html)
   # html
 
-}, options = list(bSortClasses = TRUE, aLengthMenu = c(15, 30, 45), iDisplayLength = 15))
-
-output$nrRows <- renderUI({
-  if(is.null(input$datasets)) return()
-  dat <- getdata()
-
-  # number of observations to show in dataview
-  nr <- nrow(dat)
-  sliderInput("nrRows", "Rows to show:", min = 1, max = nr, value = c(1,min(15,nr)), step = 1)
-})
-
+}, options = list(bSortClasses = TRUE, aLengthMenu = c(10, 20, 30, 50), iDisplayLength = 10))

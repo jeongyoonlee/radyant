@@ -20,7 +20,8 @@ if(Sys.getenv('SHINY_PORT') == "") {
 # main install happens in update.R now. this is just to 
 options(repos = c(CRAN = "http://cran.rstudio.com"))
 # libs <- c("shiny", "Hmisc", "car", "tools", "gridExtra", "markdown", "R.utils", "psych", "rela", "arm", "xts", "plyr", "reshape2", "vegan", "ggplot2", "lubridate", "pander")
-libs <- c("shiny", "knitr", "Hmisc", "car", "tools", "gridExtra", "markdown", "R.utils", "psych", "rela", "arm", "plyr", "reshape2", "vegan", "ggplot2", "lubridate", "pander")
+libs <- c("shiny", "knitr", "Hmisc", "car", "tools", "gridExtra", "markdown", "R.utils", "psych", "rela", 
+          "arm", "plyr", "reshape2", "vegan", "ggplot2", "lubridate", "pander","wordcloud")
 # available <- suppressWarnings(suppressPackageStartupMessages(sapply(libs, require, character.only=TRUE)))
 available <- suppressWarnings(sapply(libs, require, character.only=TRUE))
 inst.libs <- libs[available == FALSE]
@@ -32,6 +33,7 @@ if(length(inst.libs) != 0) {
 
 panderOptions('digits',3)
 
+# binding for a text input that only updates when the return key is pressed
 returnTextInput <- function(inputId, label, value = "") {
   tagList(
     singleton(tags$head(tags$script(src = "js/returnTextInputBinding.js"))),
@@ -39,6 +41,27 @@ returnTextInput <- function(inputId, label, value = "") {
     tags$input(id = inputId, type = "text", value = value, class = "returnTextInput")
   )
 }
+
+# binding for a sortable list of variables or factor levels
+html_list <- function(vars, id) {
+
+  hl <- paste0("<ul id=\'",id,"\' class='stab'>")
+  for(i in vars) hl <- paste0(hl, "<li class='ui-state-default stab'><span class='label'>",i,"</span></li>")
+  paste0(hl, "</ul>")
+}
+
+# binding for a sortable list of variables or factor levels
+returnOrder <- function(inputId, vars) {
+  tagList(
+    # singleton(tags$html(includeHTML('www/sort.html'))),
+    # singleton(tags$head(tags$script(src = 'http://code.jquery.com/ui/1.10.3/jquery-ui.js'))),
+    singleton(tags$head(tags$script(src = 'js/sort.js'))),
+    singleton(includeCSS("www/sort.css")),
+    HTML(html_list(vars, inputId)),
+    tags$head(tags$script(paste0("$(function() {$( '#",inputId,"' ).sortable({placeholder: 'ui-state-highlight'}); $( '#",inputId,"' ).disableSelection(); });")))
+  )
+}
+
 
 # unloading because it messes with method of some other packages
 # would prefer to use import From but ...

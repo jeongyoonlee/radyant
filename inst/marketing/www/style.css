@@ -88,7 +88,7 @@ input[type="number"] {
   width: 70px;
 }
 
-#viz_plot_width, #viz_plot_height { 
+#viz_plot_width, #viz_plot_height, #pmap_scaling, #pmap_fontsz { 
   max-width: 60px; 
 }
 
