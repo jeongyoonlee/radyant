@@ -1,6 +1,6 @@
 Brand maps based on attribute data can be analyzed using Factor analysis.
 
-#### Example 1
+<!-- #### Example 1
 
 The city data (city) contains information on distances in miles between 10 major cities in the US. In total 45 distances (10 x 9 / 2) from-to cities are provided. These data are used to illustrate that MDS can take simple data on distances (or on brand similarities as we will see) and use them to create a 2-dimensional map that quite accurately identifies their relative position. 
 
@@ -29,3 +29,5 @@ The coordinates shown in the Summary tab are used to plot the brands in two-dime
 From the plot a manager might conclude that the brands that are closest together in the map are percieved are close substitutes and, hence, close competitors on the mind of this consumer. A manager for Aqua Fresh or Macleans, in constrast, might focus less on Dentagrad when developing a competitive positioning plan for her brand. The main limitation of the brand maps based on (dis)similarity data is that the axes are hard to intrepret. Why are Close-up and Aim located at opposite ends of the horizontal axes for example? Research may ask respondents to explain the meaning of the axis or else obtain additional attribute information for the brands and correlate/overlay these on to the plot to vacilitate interpretation.
 
 ![mds toothpaste - plots org](figures/mds_tpbrands_plots.png)
+
+-->

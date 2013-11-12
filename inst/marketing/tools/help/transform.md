@@ -1,12 +1,12 @@
-Change, create, add, and remove variables in the data.
+Change, create, add, reorder, and remove variables in the data.
 
 #### Change
 
-When you select the Change radio button a drop-down menu is shown that will allow you do apply common transformations to one or more variables in your data. For example to take the (natural) log of a variable select the variable you want to change and choose Log from the drop-down menu. A new variable is created with the prefix 'log.'. Click the 'Save changes' button to add the variable(s) to the dataset. A description of the transformation function included in Radyant is provided below.
+When you select Change from the 'Transformation type' drop-down another drop-down menu is shown that will allow you do apply common transformations to one or more variables in your data. For example, to take the (natural) log of a variable select the variable you want to change and choose Log from the drop-down menu. A new variable is created with the prefix 'log.'. Click the 'Save changes' button to add the variable(s) to the data set. A description of the transformation functions included in Radyant is provided below.
 
 #### Create
 
-This is the most flexible command to create new or transformed variables. However, it also requires some knowledge or R syntax. A new variable can be any function of other variables in the data. Some examples are given below. In each example the name to the left of the '=' sign is the name of the new variable. On the right of the '=' sign you can include other variable names and basic R functions.
+Choose Create from the 'Transformation type' drop-down. This is the most flexible command to create new or transformed variables. However, it also requires some knowledge or R syntax. A new variable can be any function of other variables in the data. Some examples are given below. In each example the name to the left of the '=' sign is the name of the new variable. On the right of the '=' sign you can include other variable names and basic R functions. After you have typed the command press return to create the new variable and press 'Save changes' to add it to the data.
 
 1. Create a new variable z that is the difference between variables x and y in the data
 
@@ -30,11 +30,11 @@ This is the most flexible command to create new or transformed variables. Howeve
 
 #### Clipboard
 
-It is possible to manipulate your data in Excel and copy-and-paste a new variable back into R. If you do not have the original data in Excel format use the 'clipboard' feature in Data > Manage to safe the data to the clipboard so you can paste it into Excel. Apply your transformations in Excel and then copy the new variable, with a header label, to the clipboard (i.e, CTRL-C on Windows and CMD-C on Mac). Click the Clipboard radio button and paste your new data into the 'Paste from Excel' box shown. It is key that the number of observations for the new variable is the same as in the original data. The new variable will be  shown on screen. To add the variable to the data click 'Save changes'.
+It is possible to manipulate your data in Excel and copy-and-paste a new variable back into R. If you do not have the original data in Excel format use the 'clipboard' feature in Data > Manage to save the data to the clipboard so you can paste it into Excel. Apply your transformations in Excel and then copy the new variable, with a header label, to the clipboard from Excel (i.e, CTRL-C on Windows and CMD-C on Mac). Select 'Clipboard' from the 'Transformation type' dropdown and paste your new data into the 'Paste from Excel' box shown. It is key that the number of observations for the new variable is the same as in the original data. The new variable will be  shown on screen. To add the variable to the data click 'Save changes'.
 
 #### Recode
 
-To use the recode feature select the variable you want to change and click the 'Recode' radio button. Provide one or more recode commands (separate the command by a ';') and press enter to see the newly created variable. Click 'Save changes' to add the new variable to the data. Some recode command examples are given below.
+To use the recode feature select the variable you want to change and choose 'Recode' from the 'Transformation type' dropdown. Provide one or more recode commands (separate the commands by a ';') and press return to see the newly created variable. Click 'Save changes' to add the new variable to the data. Some recode command examples are given below.
 
 1. All values below 20 are set to 'Low' and all others to 'High'
 
@@ -48,19 +48,19 @@ To use the recode feature select the variable you want to change and click the '
 
 	'<25' = '<35'; '25-34' = '<35'; '35-44' = '35-54'; '45-54' = '35-54'; '55-64' = '>54'; '>64' = '>54'
 
-4. To exclude a particular value (e.g., an outlier in the data) from subsequent analyses we can recode it to a missing value. If the largest value in a variable called __sales__ is, for example, equal to 400 we would (1) select the variable __sales__ in the 'Select column(s)' box and enter the command below in the 'Recode box': 
+4. To exclude a particular value (e.g., an outlier in the data) from subsequent analyses we can recode it to a missing value. If we want to remove the maximum value from a variable called __sales__ that is equal to 400 we would (1) select the variable __sales__ in the 'Select column(s)' box and enter the command below in the 'Recode box'. Press return and 'Save changes' to add the recoded variable to the data. 
 
 	400 = NA
 
 #### Rename
 
-Click the 'Rename' radio button and select one or more variables and enter new names for them. Separate each name by a ','. Press enter to see the variables with their new names on screen. Press 'Save changes' to alter the names in the original data.
+Choose 'Rename' from the 'Transformation type' dropdown, select one or more variables and enter new names for them in the rename box shown. Separate each name by a ','. Press return to see the variables with their new names on screen and  press 'Save changes' to alter the variable names in the original data.
 
 #### Remove
 
-Click the 'Remove' radio button and select one or more variables to remove from the selected data set. Press 'Save changes' to remove the variables from the original data. This action cannot be undone.
+Choose 'Remove' from the 'Transformation type' dropdown and select one or more variables to remove. Press 'Save changes' to remove the variables from the original data. Note that this action cannot be undone. If you want to the original variables back you will have to reload the data through the Data > Manage page.
 
-#### Transformations included in the Change function
+#### Transformations available through the Change function
 
 1. Log: create a log-transformed version of the selected variable (i.e., log(x))
 2. Square: multiply a variable by itself (i.e. x^2) 
@@ -74,7 +74,6 @@ Click the 'Remove' radio button and select one or more variables to remove from 
 10. As number: convert a variable to type numeric (i.e., as.numeric(x))
 11. As integer: convert a variable to type integer (i.e., as.integer(x))
 12. As character: convert a variable to type character (i.e., as.character(x))
-13. Rev factor order: the ordering of a factor is usually alphabetical, this function reverses that order which can be useful for regression analysis where the first level is used as the base level
-14. As date (mdy): R will, by default, read dates as characters. Use this function if the dates are ordered as month-day-year
-15. As date (dmy): R will, by default, read dates as characters. Use this function if the dates are ordered as day-month-year
-16. As date (ymd): R will, by default, read dates as characters. Use this function if the dates are ordered as year-month-day
+13. As date (mdy): R will, by default, read dates as characters. Use this function if the dates are ordered as month-day-year
+14. As date (dmy): R will, by default, read dates as characters. Use this function if the dates are ordered as day-month-year
+15. As date (ymd): R will, by default, read dates as characters. Use this function if the dates are ordered as year-month-day

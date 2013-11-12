@@ -49,8 +49,8 @@ ui_pmap <- function() {
  	 	conditionalPanel(condition = "input.analysistabs == 'Plots'",
 	  	uiOutput("pmap_plot"),
  	    div(class="row-fluid",
-	    	div(class="span6", numericInput("pmap_scaling", "Arrow scaling:", 2.4, .5, 4, .1)),
-	      div(class="span6", numericInput("pmap_fontsz", "Font size:", 1, .5, 4, .1))
+	    	div(class="span6", numericInput("pmap_scaling", "Arrow scaling:", 2.1, .5, 4, .1)),
+	      div(class="span6", numericInput("pmap_fontsz", "Font size:", 1.3, .5, 4, .1))
 	    )
     ),
   	uiOutput("pmap_dim_number"),
@@ -91,9 +91,10 @@ plot.pmap <- function(result) {
 				abline(v=0, h=0)
 
 				if("brand" %in% input$pmap_plot) {
-					points(std.scores[,i], std.scores[,j], col="darkgreen", pch = 16, cex = .6)
+					points(std.scores[,i], std.scores[,j], pch = 16, cex = .6)
 					# text(std.scores[,i], std.scores[,j], out$brand.names, col="darkgreen", cex = 1.2, adj = c(-.1,-.2))
-					textplot(std.scores[,i], std.scores[,j]*lab_buf, out$brand.names, cex = input$pmap_fontsz, col="darkgreen", new = FALSE)
+					# textplot(std.scores[,i], std.scores[,j]*lab_buf, out$brand.names, cex = input$pmap_fontsz, col="darkgreen", new = FALSE)
+					textplot(std.scores[,i], std.scores[,j]+(.04*max.max), out$brand.names, cex = input$pmap_fontsz, new = FALSE)
 				}
 			
 				if("attr" %in% input$pmap_plot) {

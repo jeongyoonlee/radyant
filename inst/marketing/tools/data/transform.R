@@ -78,10 +78,10 @@ d_ymd <<- function(x) as.Date(ymd(as.character(x)))
 # "Standardize (2-sd)" = "st2","Invert" = "inv", "Bin 2" = "bin2", "Bin10" = "bin10", "As factor" = "fct", "Rev factor order" = "rfct", "As number" = "num", "As character" = "ch", 
 
 trans_options <- list("None" = "", "Log" = "log", "Square" = "sq", "Square-root" = "sqrt", "Center" = "cent", "Standardize" = "st", 
-	"Invert" = "inv", "Median split" = "msp", "Deciles" = "dec", "As factor" = "fct",  "As number" = "num", "As integer" = "int", "As character" = "ch", "Rev factor order" = "rfct",
+	"Invert" = "inv", "Median split" = "msp", "Deciles" = "dec", "As factor" = "fct",  "As number" = "num", "As integer" = "int", "As character" = "ch",
 	"As date (mdy)" = "d_mdy", "As date (dmy)" = "d_dmy", "As date (ymd)" = "d_ymd")
 
-trans_types <- list("Change" = "change", "Create" = "create", "Clipboard" = "clip", "Recode" = "recode", "Rename" = "rename", "Reorder columns" = "reorder_cols", "Reorder levels" = "reorder_levs", "Remove" = "remove")
+trans_types <- list("----------" = "", "Change" = "change", "Create" = "create", "Clipboard" = "clip", "Recode" = "recode", "Rename" = "rename", "Reorder columns" = "reorder_cols", "Reorder levels" = "reorder_levs", "Remove" = "remove")
 
 ui_Transform <- function() {
 	# Inspired by Ian Fellow's transform ui in JGR/Deducer
@@ -89,7 +89,7 @@ ui_Transform <- function() {
     uiOutput("tr_columns"),
 
    	# radioButtons("tr_changeType", "", c("Change" = "change", "Create" = "create", "Clipboard" = "clip", "Recode" = "recode", "Rename" = "rename", "Reorder" = "reorder", "Remove" = "remove"), selected = "Change"),
-    selectInput("tr_changeType", "Choose type:", trans_types, selected = "Change"),
+    selectInput("tr_changeType", "Transformation type:", trans_types, selected = "----------"),
     conditionalPanel(condition = "input.tr_changeType == 'change'",
 	    selectInput("tr_transfunction", "Change columns:", trans_options)
     ),
@@ -115,7 +115,9 @@ ui_Transform <- function() {
     ),
 
     # actionButton("transfix", "Edit variables in place") # using the 'fix(mtcars)' to edit the data 'inplace'. Looks great from R-ui, not so great from Rstudio
-    actionButton("addtrans", "Save changes"),
+    conditionalPanel(condition = "input.tr_changeType != ''",
+	    actionButton("addtrans", "Save changes")
+	  ),
 
     conditionalPanel(condition = "input.tr_changeType == 'reorder_cols'",
     	br(),
@@ -137,7 +139,7 @@ ui_Transform <- function() {
 transform_main <- reactive({
 
 	if(input$datatabs != 'Transform') return()
-	if(is.null(input$tr_changeType)) return()
+	if(is.null(input$tr_changeType) || input$tr_changeType == '') return()
 	if(is.null(input$datasets)) return()
 
 	dat <- getdata()

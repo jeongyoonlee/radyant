@@ -49,7 +49,7 @@ ui_mds <- function() {
   	uiOutput("mds_dis"),
   	uiOutput("mds_dim_number"),
  	 	conditionalPanel(condition = "input.analysistabs == 'Plots'",
- 	 		numericInput("mds_fontsz", "Font size:", 1, .5, 4, .1),
+ 	 		numericInput("mds_fontsz", "Font size:", 1.3, .5, 4, .1),
 	  	uiOutput("mds_rev_dim")
     )),
 		helpModal('(Dis)similarity based maps (MDS)','mds',includeHTML("tools/help/mds.html"))
@@ -88,15 +88,16 @@ plot.mds <- function(result) {
 		for(j in (i+1):out$nr.dim) {
 			plot(c(-out$lim,out$lim),type = "n",xlab='', ylab='', axes = F, asp = 1, yaxt = 'n', xaxt = 'n', ylim=c(-out$lim, out$lim), xlim=c(-out$lim,out$lim))
 			title(paste("Dimension",i,"vs Dimension",j), cex.main = input$mds_fontsz)
-			points(out$points[,i], out$points[,j], col="darkgreen", pch = 16, cex = .6)
+			points(out$points[,i], out$points[,j], pch = 16, cex = .6)
 
-			# text(out$points[,i], out$points[,j], out$labels, col=rainbow(out$nr.lev,start=.6,end=.1), cex = out$fsize, adj = c(0.4,-.4))
+			# text(out$points[,i], out$points[,j], out$labels, col=rainbow(out$nr.lev,start=.6,end=.1), adj = c(0.4,-.4))
 			textplot(out$points[,i], out$points[,j]+(.04*out$lim), out$labels, col=rainbow(out$nr.lev,start=.6,end=.1), cex = input$mds_fontsz, new = FALSE)
 			abline(v=0, h=0)
 		}
 	}
 
 	par(op)
+
 
 	###############################################
 	# move this over to ggplot when you have time
@@ -165,17 +166,13 @@ mds <- reactive({
 
 	co.mds <- isoMDS(co.dist.mat, k = nr.dim, trace = FALSE)
 
-	pbf <- 1
-	fsize <- 1.5
-
 	out <- list()
 	out$nr.dim <- nr.dim
 	out$data <- co.dist.mat
 	out$points <- co.mds$points
 	out$labels <- lab
 	out$nr.levels <- nr.lev
-	out$lim <- max(abs(out$points)) * pbf
-	out$fsize <- fsize
+	out$lim <- max(abs(out$points))
 
 	# nr.plots <- factorial(c(nr.dim,2))
 	# plotHeight <- 650 * (nr.plots[1] / nr.plots[2])
