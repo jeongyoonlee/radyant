@@ -197,15 +197,15 @@ plot.regression <- function(result) {
 	# require(ggplot2)
 	# require(gridextra)
 	# dat <- ideal
-	# head(ideal)
-	# result <- lm(y ~ x1 + x2 + x3, data = dat)
+	# dat <- mtcars
+	# head(dat)
+	# result <- lm(mpg ~ cyl + disp, data = dat)
 
 	# mod <- fortify(result)
 	# str(result)
 	# head(mod)
 
 	# dat$rnd <- rnorm(dat)
-
 	# result <- step(lm(y ~ x1 + x2 + x3 + rnd, data = dat))
 	# result <- lm(y ~ x1 + x2 + x3 + rnd + x2:x3, data = dat)
 
@@ -239,17 +239,37 @@ plot.regression <- function(result) {
 
 		plots <- list()
 
+		# require(MASS)
+		# require(splines)
+
+		# ggplot(df, aes(x=x, y=y)) + geom_point() + geom_abline(linetype = 'dotdash') + geom_smooth(span = 1, size = .75, linetype = "dotdash") + labs(list(title = "Actual vs Fitted", x = "Fitted values", y = "Actual values"))
+		# ggplot(df, aes(x=x, y=y)) + geom_point() + geom_abline(linetype = 'dotdash') + 
+		# 	stat_smooth(method = 'rlm', formula = y ~ ns(x,3), size = .75, linetype = "dotdash") + labs(list(title = "Actual vs Fitted", x = "Fitted values", y = "Actual values"))
+		# p <- ggplot(df, aes(x=x, y=y)) + geom_point() + geom_abline(linetype = 'dotdash')
+		# p <- p + stat_smooth(span = 1, size = .75, linetype = "dotdash") + labs(list(title = "Actual vs Fitted", x = "Fitted values", y = "Actual values"))
+	 # 	p <- p + stat_smooth(size = .75, linetype = "dotdash") + labs(list(title = "Actual vs Fitted", x = "Fitted values", y = "Actual values"))
+	 # 	print(p)
+
+		# p <- ggplot(df, aes(x=x, y=y)) + geom_point() + geom_abline(linetype = 'dotdash')
+		# p <- p + geom_smooth(span = 1, size = .75, linetype = "dotdash") + labs(list(title = "Actual vs Fitted", x = "Fitted values", y = "Actual values"))
+	 # 	p <- p + geom_smooth(size = .75, linetype = "dotdash") + labs(list(title = "Actual vs Fitted", x = "Fitted values", y = "Actual values"))
+	 # 	print(p)
+
+
 		df <- data.frame(cbind(mod$.fitted,mod[1]))
 		colnames(df) <- c("x","y")
 		# plots[[1]] <- ggplot(df, aes(x=x, y=y)) + geom_point() + stat_smooth(method="lm", se=TRUE) +
 		plots[[1]] <- ggplot(df, aes(x=x, y=y)) + geom_point() + geom_abline(linetype = 'dotdash') +
-			geom_smooth(size = .75, linetype = "dotdash") + labs(list(title = "Actual vs Fitted", x = "Fitted values", y = "Actual values"))
+			geom_smooth(span = 1, size = .75, linetype = "dotdash") + labs(list(title = "Actual vs Fitted", x = "Fitted values", y = "Actual values"))
+			# geom_smooth(method = 'rlm', formula = y ~ ns(x,3), size = .75, linetype = "dotdash") + labs(list(title = "Actual vs Fitted", x = "Fitted values", y = "Actual values"))
 
-		plots[[2]] <- qplot(.fitted, .resid, data = mod) + geom_smooth(size = .75, linetype = "dotdash") +
+		plots[[2]] <- qplot(.fitted, .resid, data = mod) + geom_smooth(span = 1, size = .75, linetype = "dotdash") +
+		# plots[[2]] <- qplot(.fitted, .resid, data = mod) + geom_smooth(method = 'rlm', formula = y ~ ns(x,3), size = .75, linetype = "dotdash") +
 			labs(list(title = "Residuals vs Fitted", x = "Fitted values", y = "Residuals"))
 
 		plots[[3]] <- qplot(y=.resid, x=seq_along(.resid), data = mod) + geom_point() + 
-			geom_smooth(size = .75, linetype = "dotdash") + labs(list(title = "Residuals vs Row order", x = "Row order", y = "Residuals"))
+			geom_smooth(span = 1, size = .75, linetype = "dotdash") + labs(list(title = "Residuals vs Row order", x = "Row order", y = "Residuals"))
+			# geom_smooth(method = 'rlm', formula = y ~ ns(x,3), size = .75, linetype = "dotdash") + labs(list(title = "Residuals vs Row order", x = "Row order", y = "Residuals"))
 
 		plots[[4]] <- qplot(sample =.stdresid, data = mod, stat = "qq") + geom_abline(linetype = 'dotdash') +
 			labs(list(title = "Normal Q-Q", x = "Theoretical quantiles", y = "Standardized residuals"))
@@ -270,7 +290,7 @@ plot.regression <- function(result) {
 				plots[[i]] <- ggplot(dat, aes_string(x=i, y=reg_var1)) + geom_boxplot(fill = 'blue', alpha = .3)
 			} else {
 				# plots[[i]] <- ggplot(dat, aes_string(x=i, y=input$reg_var1)) + geom_point() + geom_smooth(size = .75, linetype = "dotdash")
-				plots[[i]] <- ggplot(dat, aes_string(x=i, y=reg_var1)) + geom_point() + geom_smooth(size = .75, linetype = "dotdash")
+				plots[[i]] <- ggplot(dat, aes_string(x=i, y=reg_var1)) + geom_point() + geom_smooth(span = 1, size = .75, linetype = "dotdash")
 			}
 		}
 		p <- suppressWarnings(suppressMessages(do.call(grid.arrange, c(plots, list(ncol = 2)))))
@@ -293,7 +313,7 @@ plot.regression <- function(result) {
 			if(getdata_class()[i] == 'factor') {
 				plots[[i]] <- ggplot(rdat, aes_string(x=i, y="residuals")) + geom_boxplot(fill = 'blue', alpha = .3)
 			} else {
-				plots[[i]] <- ggplot(rdat, aes_string(x=i, y="residuals")) + geom_point() + geom_smooth(size = .75, linetype = "dotdash")
+				plots[[i]] <- ggplot(rdat, aes_string(x=i, y="residuals")) + geom_point() + geom_smooth(span = 1, size = .75, linetype = "dotdash")
 			}
 		}
 		p <- suppressWarnings(suppressMessages(do.call(grid.arrange, c(plots, list(ncol = 2)))))
@@ -316,7 +336,7 @@ plot.regression <- function(result) {
 			labs(list(title = "Actual vs Fitted", x = "Fitted values", y = "Actual values"))
 
 	} else if(input$reg_plots == 1) {
-		p <- qplot(.fitted, .resid, data = mod) + geom_hline(yintercept = 0) + geom_smooth(se = FALSE) +
+		p <- qplot(.fitted, .resid, data = mod) + geom_hline(yintercept = 0) + geom_smooth(span = 1, se = FALSE) +
 			labs(list(title = "Residuals vs Fitted", x = "Fitted values", y = "Residuals"))
 
 	} else if(input$reg_plots == 2) {
@@ -328,7 +348,7 @@ plot.regression <- function(result) {
 			labs(list(title = "Normal Q-Q", x = "Theoretical quantiles", y = "Standardized residuals"))
 
 	} else if(input$reg_plots == 4) {
-		p <- qplot(.fitted, sqrt(abs(.stdresid)), data = mod) + geom_smooth(se = FALSE) +
+		p <- qplot(.fitted, sqrt(abs(.stdresid)), data = mod) + geom_smooth(span = 1, se = FALSE) +
 			labs(list(title = "Scale-Location", x = "Fitted values", y = "Sqrt. standardized residuals"))
 
 	} else if(input$reg_plots == 5) {
@@ -337,12 +357,12 @@ plot.regression <- function(result) {
 			labs(list(title = "Cook's distance", x = "Observation number", y = "Cook's distance"))
 
 	} else if(input$reg_plots == 6) {
-		p <- qplot(.hat, .stdresid, data = mod, size = .cooksd) + geom_smooth(se = FALSE, size = 0.5) +
+		p <- qplot(.hat, .stdresid, data = mod, size = .cooksd) + geom_smooth(span = 1, se = FALSE, size = 0.5) +
 			labs(list(title = "Residuals vs Leverage", x = "Leverage", y = "Standardized residuals", size = "Cook's distance"))
 
 	} else if(input$reg_plots == 7) {
 		p <- ggplot(mod, aes(.hat, .cooksd)) + geom_vline(xintercept = 0, colour = NA) +
-			geom_abline(slope = seq(0, 3, by = 0.5), colour = "white") + geom_smooth(se = FALSE) +
+			geom_abline(slope = seq(0, 3, by = 0.5), colour = "white") + geom_smooth(span = 1, se = FALSE) +
 			geom_point() + labs(list(title = "Cook's distance vs Leverage", x = "Leverage", y = "Cook's distance"))
 		 	# p <- qplot(.hat, .cooksd, size = .cooksd / .hat, data = mod) + scale_area()
 	}

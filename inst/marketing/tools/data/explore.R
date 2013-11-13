@@ -38,6 +38,7 @@ ui_Explore <- function() {
     uiOutput("expl_columns"),
     uiOutput("expl_byvar"),
     uiOutput("expl_function"),
+    returnTextInput("expl_select", "Subset (e.g., mpg > 20 & vs == 1)", ''),
 	  div(class="row-fluid",
     	div(class="span6",checkboxInput('expl_show_tab', 'Show table', value = TRUE)),
       div(class="span6", uiOutput("expl_show_viz"))
@@ -55,6 +56,18 @@ explore <- reactive({
 	# if(is.null(input$expl_byvar)) return(getdata()[,input$expl_columns])
 	if(sum(input$expl_columns %in% colnames(dat)) != length(input$expl_columns))  return()
 	if(is.null(input$expl_byvar)) return(dat[,input$expl_columns])
+
+  if(input$expl_select != '') {
+    selcom <- input$expl_select
+    selcom <- gsub(" ", "", selcom)
+    seldat <- try(do.call(subset, list(dat,parse(text = selcom))), silent = TRUE)
+    if(!is(seldat, 'try-error')) {
+      if(is.data.frame(seldat)) {
+        dat <- seldat
+        seldat <- NULL
+      }
+    }
+  }
 
 	# if(is.null(input$expl_byvar)) return(getdata()[,input$expl_columns])
 	# getdata()[,c(input$expl_byvar,input$expl_columns)]
