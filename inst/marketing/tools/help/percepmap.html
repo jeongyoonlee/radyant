@@ -10,7 +10,130 @@
 
 
 <style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 12px;
+   margin: 8px;
+}
 
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 { 
+   font-size:2.2em; 
+}
+
+h2 { 
+   font-size:1.8em; 
+}
+
+h3 { 
+   font-size:1.4em; 
+}
+
+h4 { 
+   font-size:1.0em; 
+}
+
+h5 { 
+   font-size:0.9em; 
+}
+
+h6 { 
+   font-size:0.8em; 
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre {	
+   margin-top: 0;
+   max-width: 95%;
+   border: 1px solid #ccc;
+   white-space: pre-wrap;
+}
+
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code.r, code.cpp {
+   background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * { 
+      background: transparent !important; 
+      color: black !important; 
+      filter:none !important; 
+      -ms-filter: none !important; 
+   }
+
+   body { 
+      font-size:12pt; 
+      max-width:100%; 
+   }
+       
+   a, a:visited { 
+      text-decoration: underline; 
+   }
+
+   hr { 
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote { 
+      padding-right: 1em; 
+      page-break-inside: avoid; 
+   }
+
+   tr, img { 
+      page-break-inside: avoid; 
+   }
+
+   img { 
+      max-width: 100% !important; 
+   }
+
+   @page :left { 
+      margin: 15mm 20mm 15mm 10mm; 
+   }
+     
+   @page :right { 
+      margin: 15mm 10mm 15mm 20mm; 
+   }
+
+   p, h2, h3 { 
+      orphans: 3; widows: 3; 
+   }
+
+   h2, h3 { 
+      page-break-after: avoid; 
+   }
+}
 </style>
 
 
@@ -24,7 +147,7 @@
 
 The city data (city) contains information on distances in miles between 10 major cities in the US. In total 45 distances (10 x 9 / 2) from-to cities are provided. These data are used to illustrate that MDS can take simple data on distances (or on brand similarities as we will see) and use them to create a 2-dimensional map that quite accurately identifies their relative position. 
 
-Click the 'examples' radio button on the Data > Manage page and click &lsquo;Load examples&rsquo; then choose the city data from the Datasets dropdown. The original distances are shown in (lower triangular) matrix form in the figure below. If the analysis is successful we would expect that cities that are close (e.g., Washington DC and New York) should be located close together on the map and cities that are far apart (e.g., Seattle and Miami) should also be positioned far apart in the map.
+Click the 'examples' radio button on the Data > Manage page and click 'Load examples' then choose the city data from the Datasets dropdown. The original distances are shown in (lower triangular) matrix form in the figure below. If the analysis is successful we would expect that cities that are close (e.g., Washington DC and New York) should be located close together on the map and cities that are far apart (e.g., Seattle and Miami) should also be positioned far apart in the map.
 
 The basic measure of (lack of) fit for an MDS analysis is call Stress. Stress values of .1 are generally considered fair, .05 is good, and .01 or lower is excellent. High stress values may indicate that a dimensionality of three (or higher) is needed to accurately depict that available data. For the city data the stress value is equal to .006 which is outstanding. 
 
@@ -40,17 +163,17 @@ After ‘flipping’ the plot we see that the relative locations look quite good
 
 #### Example 2
 
-The following plot is based on similarity data for a set of toothpaste brands (tpbrands). Respondents were asked the following question: &ldquo;Please rate the following pairs of toothpaste brands on the basis of their similarity (1 = very similar, 7 = very dissimilar).&rdquo; for all pairwise combinations of 10 brands, i.e., 45 comparisons. MDS will try to create a made that reproduces as accurately as possible the original dissimilarities (or perceptual distances) provided by the respondent. The original dissimilarity ratings are shown in (lower triangular) matrix form in the figure below. From these data we can already see that the respondents percieves some brands to be very similar (e.g., Crest and Colgate) and others to be very dissimilar (e.g., Dentagard and Aqua Fresh). The stress value for a two-dimensional solution is very good (.092). 
+The following plot is based on similarity data for a set of toothpaste brands (tpbrands). Respondents were asked the following question: "Please rate the following pairs of toothpaste brands on the basis of their similarity (1 = very similar, 7 = very dissimilar)." for all pairwise combinations of 10 brands, i.e., 45 comparisons. MDS will try to create a made that reproduces as accurately as possible the original dissimilarities (or perceptual distances) provided by the respondent. The original dissimilarity ratings are shown in (lower triangular) matrix form in the figure below. From these data we can already see that the respondents percieves some brands to be very similar (e.g., Crest and Colgate) and others to be very dissimilar (e.g., Dentagard and Aqua Fresh). The stress value for a two-dimensional solution is very good (.092). 
 
 ![mds toothpaste - summary](figures/mds_tpbrands_summary.png)
 
-The coordinates shown in the Summary tab are used to plot the brands in two-dimensions in the Plots tab. In the plot we see that Crest and Colgate as well as Ultra Brite and Pepsodent are located very close together. This is consistent with the original data (both pairs were rated &lsquo;1&rsquo;). Dentagard and Aqua Fresh, however, are positioned at opposite ends of the plot. Again, this is consistent with the original data providing visual confirmations that MDS was able to create a plot that fits the data well.
+The coordinates shown in the Summary tab are used to plot the brands in two-dimensions in the Plots tab. In the plot we see that Crest and Colgate as well as Ultra Brite and Pepsodent are located very close together. This is consistent with the original data (both pairs were rated '1'). Dentagard and Aqua Fresh, however, are positioned at opposite ends of the plot. Again, this is consistent with the original data providing visual confirmations that MDS was able to create a plot that fits the data well.
 
 From the plot a manager might conclude that the brands that are closest together in the map are percieved are close substitutes and, hence, close competitors on the mind of this consumer. A manager for Aqua Fresh or Macleans, in constrast, might focus less on Dentagrad when developing a competitive positioning plan for her brand. The main limitation of the brand maps based on (dis)similarity data is that the axes are hard to intrepret. Why are Close-up and Aim located at opposite ends of the horizontal axes for example? Research may ask respondents to explain the meaning of the axis or else obtain additional attribute information for the brands and correlate/overlay these on to the plot to vacilitate interpretation.
 
 ![mds toothpaste - plots org](figures/mds_tpbrands_plots.png)
 
-&ndash;>
+-->
 
 </body>
 

@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>Markdown Quick Reference</title>
+
+
+
+
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 12px;
+   margin: 8px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 { 
+   font-size:2.2em; 
+}
+
+h2 { 
+   font-size:1.8em; 
+}
+
+h3 { 
+   font-size:1.4em; 
+}
+
+h4 { 
+   font-size:1.0em; 
+}
+
+h5 { 
+   font-size:0.9em; 
+}
+
+h6 { 
+   font-size:0.8em; 
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre {	
+   margin-top: 0;
+   max-width: 95%;
+   border: 1px solid #ccc;
+   white-space: pre-wrap;
+}
+
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code.r, code.cpp {
+   background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * { 
+      background: transparent !important; 
+      color: black !important; 
+      filter:none !important; 
+      -ms-filter: none !important; 
+   }
+
+   body { 
+      font-size:12pt; 
+      max-width:100%; 
+   }
+       
+   a, a:visited { 
+      text-decoration: underline; 
+   }
+
+   hr { 
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote { 
+      padding-right: 1em; 
+      page-break-inside: avoid; 
+   }
+
+   tr, img { 
+      page-break-inside: avoid; 
+   }
+
+   img { 
+      max-width: 100% !important; 
+   }
+
+   @page :left { 
+      margin: 15mm 20mm 15mm 10mm; 
+   }
+     
+   @page :right { 
+      margin: 15mm 10mm 15mm 20mm; 
+   }
+
+   p, h2, h3 { 
+      orphans: 3; widows: 3; 
+   }
+
+   h2, h3 { 
+      page-break-after: avoid; 
+   }
+}
+</style>
+
+
+
+</head>
+
+<body>
+<h2>Markdown Quick Reference</h2>
+
+<p>Markdown is an easy-to-write plain text format for creating web content.</p>
+
+<h3>Emphasis</h3>
+
+<p><em>italic</em>   <strong>bold</strong></p>
+
+<p><em>italic</em>   <strong>bold</strong></p>
+
+<h3>Headers</h3>
+
+<h1>Header 1</h1>
+
+<h2>Header 2</h2>
+
+<h3>Header 3</h3>
+
+<h4>Header 4</h4>
+
+<h3>Unordered List</h3>
+
+<ul>
+<li>Item 1</li>
+<li>Item 2
+
+<ul>
+<li>Item 2a</li>
+<li>Item 2b</li>
+</ul></li>
+</ul>
+
+<h3>Ordered List</h3>
+
+<ol>
+<li>Item 1</li>
+<li>Item 2</li>
+<li>Item 3
+
+<ul>
+<li>Item 3a</li>
+<li>Item 3b</li>
+</ul></li>
+</ol>
+
+<h3>Manual Line Breaks</h3>
+
+<p>End a line with two or more spaces:</p>
+
+<p>Roses are red,<br>
+Violets are blue.</p>
+
+<h3>Links</h3>
+
+<p>Use a plain http address or add a link to a phrase:</p>
+
+<p><a href="http://rstudio.com">http://rstudio.com</a></p>
+
+<p><a href="http://rstudio.com">Rstudio</a></p>
+
+<h3>Images</h3>
+
+<p>Images on the web or local files in the same directory:</p>
+
+<p><img src="http://upload.chinaz.com/2012/0720/1342775570137.jpg" alt="alt text"></p>
+
+<p><img src="figures/view.png" alt="alt text"></p>
+
+<p>For the help files using a chrome screen-capture tool is recommended:</p>
+
+<p><a href="https://chrome.google.com/webstore/detail/awesome-screenshot-captur/alelhddbbhepgpmgidjdcjakblofbmce?hl=en">Awesome screenshot</a></p>
+
+<h3>Blockquotes</h3>
+
+<p>A friend once said:</p>
+
+<blockquote>
+<p>It&#39;s always better to give 
+than to receive.</p>
+</blockquote>
+
+<h3>R Code Blocks</h3>
+
+<p>R code will be evaluated and printed</p>
+
+<pre><code class="r">summary(cars$dist)
+</code></pre>
+
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##       2      26      36      43      56     120
+</code></pre>
+
+<pre><code class="r">summary(cars$speed)
+</code></pre>
+
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##     4.0    12.0    15.0    15.4    19.0    25.0
+</code></pre>
+
+<h4>Inline R Code</h4>
+
+<p>There were 50 cars studied</p>
+
+<h4>Plain Code Blocks</h4>
+
+<p>Plain code blocks are displayed in a fixed-width font but not evaulated</p>
+
+<pre><code>This text is displayed verbatim / preformatted
+</code></pre>
+
+<h3>Horizontal Rule / Page Break</h3>
+
+<p>Three or more asterisks or dashes:</p>
+
+<hr>
+
+<hr>
+
+<h3>Links</h3>
+
+<p>A <a href="http://Rstudio.com/" title="Title">linked phrase</a>. </p>
+
+<p>At the bottom of the document:</p>
+
+<h3>Miscellaneous</h3>
+
+<p>superscript<sup>2</sup></p>
+
+<p><del>strikethrough</del></p>
+
+<h2>Math</h2>
+
+<p>\[ y_t = \alpha + \beta X + \epsilon_t \]</p>
+
+<p>An inline version looks like this: \(y_t = \alpha + \beta X + \epsilon_t\)</p>
+
+</body>
+
+</html>

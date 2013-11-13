@@ -4,3 +4,9 @@ options(rstudio.markdownToHTML =
     markdownToHTML(inputFile, outputFile, stylesheet='mymd.css')  
   }
 )
+
+helpfiles <- list.files(".",pattern = "*.Rmd")
+
+for(hf in helpfiles) {
+	knit2html(hf, options = "")
+}
