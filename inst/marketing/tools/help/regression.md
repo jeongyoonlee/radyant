@@ -95,4 +95,4 @@ The final diagnostic we will discuss is a set of plots of the residuals versus t
 
 ![Regression 3 - mm residual vs predicted](figures/regression_mm_res_vs_pred.png)
 
-Since the diagnostics do not look good, we should not draw inferences from the regression. I will post a video-tutorial this afternoon to illustrate how to apply a log-log transformation to the data to see if this specification is more appropriate for the data.
+Since the diagnostics do not look good, we should not draw inferences from this regression. A log-log or semi-log specification might be preferable.
