@@ -11,7 +11,14 @@ output$cor_var <- renderUI({
 ui_correlation <- function() {
   list(wellPanel(
 	    uiOutput("cor_var"),
-		  selectInput(inputId = "cor_type", label = "Method", choices = c("pearson", "spearman"), selected = "pearson")
+		  selectInput(inputId = "cor_type", label = "Method", choices = c("pearson", "spearman"), selected = "pearson"),
+     	numericInput("cor_cutoff", label = "Correlation cutoff:", min = 0, max = 1, value = 0, step = .05)
+
+			# div(class="row-fluid",
+	  #   	div(class="span6", numericInput("cor_cutoff", label = "Correlation cutoff:", min = 0, max = 1, value = 0, step = .05) ),
+	  #     div(class="span6", checkboxInput("cor_sort", "Sort", value = FALSE) )
+	  #   )
+
 	  ),
 	 	helpModal('Correlation','correlation',includeHTML("tools/help/correlation.html"))
 	)
@@ -19,14 +26,33 @@ ui_correlation <- function() {
 
 summary.correlation <- function(dat) {
 
-	# cmat <- cor(dat, use="complete.obs", method = input$cor_type)
-	# print(as.dist(cmat), digits = 2)
-
+	# calculate the correlation matrix with p-values
 	cmat <- Hmisc::rcorr(as.matrix(dat), type = input$cor_type)
+
+	# if(input$cor_sort) {
+	# 	smat <- mat.sort(cmat$r)
+	# 	smat <- attr(smat, 'dimnames')[[1]]
+
+	# 	cmat$r <- cmat$r[smat,smat]
+	# 	cmat$P <- cmat$P[smat,smat]
+	# }
+
+	cr <- format(round(cmat$r,2))
+  cr[abs(cmat$r) < input$cor_cutoff] <- ""
+	ltmat <- lower.tri(cr)
+  cr[!ltmat] <- ""
+
+
+	cp <- format(round(cmat$P,2))
+  cp[abs(cmat$r) < input$cor_cutoff] <- ""
+  cp[!ltmat] <- ""
+
 	cat("Correlation matrix:\n")
-	print(as.dist(round(cmat$r,2)))
+	# print(as.dist(round(cmat$r,2)))
+  print(cr, quote = FALSE)
 	cat("\np-values:\n")
-	print(as.dist(round(cmat$P,2)))
+	# print(as.dist(round(cmat$P,2)))
+  print(cp, quote = FALSE)
 }
 
 plot.correlation <- function(dat) {
@@ -168,8 +194,6 @@ plot.regression <- function(result) {
 
 	mod <- fortify(result)
 
-
-
 	# require(ggplot2)
 	# require(gridextra)
 	# dat <- ideal
@@ -180,38 +204,20 @@ plot.regression <- function(result) {
 	# str(result)
 	# head(mod)
 
-	# input <- list()
-	# input$reg_var1 <- "y"
-	# input$reg_var2 <- c("x1","x2","x3")
+	# dat$rnd <- rnorm(dat)
+
+	# result <- step(lm(y ~ x1 + x2 + x3 + rnd, data = dat))
+	# result <- lm(y ~ x1 + x2 + x3 + rnd + x2:x3, data = dat)
+
+	# mod <- fortify(result)
+	# str(result)
+	# head(mod)
+
+	vars <- as.character(attr(result$terms,'variables'))[-1]
+	reg_var1 <- vars[1]
+	reg_var2 <- vars[-1]
+
 	# vars <- c(input$reg_var1, input$reg_var2)
-
-
-	# # input$reg_plots = "leverage_plots"
-	# require(car)
-	# leveragePlots(result)
-	# ?leveragePlot
-	# leveragePlot
-
-	# terms <- ~.
-
-	# result <- lm(y ~ x1 + x2 + x3 + x2:x3, data = dat)
-	# model <- result
-
- #   vform <- update(formula(model), terms)
- #   vform
- #   terms.model <- attr(attr(model.frame(model), "terms"), "term.labels")
- #   terms.model
- #   terms.vform <- attr(terms(vform), "term.labels")
- #   terms.vform
- #   good <- terms.model[match(terms.vform, terms.model)]
- #   good
-
-
-
-
-
-
-	vars <- c(input$reg_var1, input$reg_var2)
 	dat <- mod[,vars, drop = FALSE]
 
 	# input$reg_plots = "histlist"
@@ -257,11 +263,14 @@ plot.regression <- function(result) {
 		plots <- list()
 		# for(i in input$reg_var2) plots[[i]] <- ggplot(dat, aes_string(x=i, y=input$reg_var1)) + geom_point() + geom_smooth(method = "lm", size = .75, linetype = "dotdash")
 		# for(i in input$reg_var2) plots[[i]] <- ggplot(dat, aes_string(x=i, y=input$reg_var1)) + geom_point() + geom_smooth(size = .75, linetype = "dotdash")
-		for(i in input$reg_var2) { 
+		# for(i in input$reg_var2) { 
+		for(i in reg_var2) { 
 			if(getdata_class()[i] == 'factor') {
-				plots[[i]] <- ggplot(dat, aes_string(x=i, y=input$reg_var1)) + geom_boxplot(fill = 'blue', alpha = .3)
+				# plots[[i]] <- ggplot(dat, aes_string(x=i, y=input$reg_var1)) + geom_boxplot(fill = 'blue', alpha = .3)
+				plots[[i]] <- ggplot(dat, aes_string(x=i, y=reg_var1)) + geom_boxplot(fill = 'blue', alpha = .3)
 			} else {
-				plots[[i]] <- ggplot(dat, aes_string(x=i, y=input$reg_var1)) + geom_point() + geom_smooth(size = .75, linetype = "dotdash")
+				# plots[[i]] <- ggplot(dat, aes_string(x=i, y=input$reg_var1)) + geom_point() + geom_smooth(size = .75, linetype = "dotdash")
+				plots[[i]] <- ggplot(dat, aes_string(x=i, y=reg_var1)) + geom_point() + geom_smooth(size = .75, linetype = "dotdash")
 			}
 		}
 		p <- suppressWarnings(suppressMessages(do.call(grid.arrange, c(plots, list(ncol = 2)))))
@@ -271,12 +280,15 @@ plot.regression <- function(result) {
 	if(input$reg_plots == "resid_vs_predictorlist") {
 		plots <- list()
 		residuals <- mod$.resid
-		rdat <- cbind(residuals,dat[,input$reg_var2])
+		# rdat <- cbind(residuals,dat[,input$reg_var2])
+		rdat <- cbind(residuals,dat[,reg_var2])
 		rdat <- data.frame(rdat)
-		colnames(rdat) <- c('residuals',input$reg_var2)
+		# colnames(rdat) <- c('residuals',input$reg_var2)
+		colnames(rdat) <- c('residuals',reg_var2)
 		# for(i in input$reg_var2) plots[[i]] <- ggplot(rdat, aes_string(x=i, y="residuals")) + geom_point() + geom_smooth(method = "lm", size = .75, linetype = "dotdash")
 		# for(i in input$reg_var2) plots[[i]] <- ggplot(rdat, aes_string(x=i, y="residuals")) + geom_point() + geom_smooth(se = FALSE)
-		for(i in input$reg_var2) {
+		# for(i in input$reg_var2) {
+		for(i in reg_var2) {
 			# plots[[i]] <- ggplot(rdat, aes_string(x=i, y="residuals")) + geom_point() + geom_smooth(se = FALSE)
 			if(getdata_class()[i] == 'factor') {
 				plots[[i]] <- ggplot(rdat, aes_string(x=i, y="residuals")) + geom_boxplot(fill = 'blue', alpha = .3)
@@ -289,7 +301,8 @@ plot.regression <- function(result) {
 
 	# input$reg_plots = "leverage_plots"
 	if(input$reg_plots == "leverage_plots") {
-		return(leveragePlots(result, main = "", ask=FALSE, id.n = 1, layout = c(ceiling(length(input$reg_var2)/2),2)))
+		# return(leveragePlots(result, main = "", ask=FALSE, id.n = 1, layout = c(ceiling(length(input$reg_var2)/2),2)))
+		return(leveragePlots(result, main = "", ask=FALSE, id.n = 1, layout = c(ceiling(length(reg_var2)/2),2)))
 	}
 
 	if(input$reg_plots == "coef") {
@@ -363,7 +376,9 @@ regression <- reactive({
 		mod$plotWidth <- 500
 	}
 
-	nrVars <- length(input$reg_var2) + 1
+	nrVars <- length(as.character(attr(mod$terms,'variables'))[-1])
+	# nrVars <- length(input$reg_var2) + 1
+
 	if(input$reg_plots == 'histlist') {
 		mod$plotHeight <- 325 * ceiling(nrVars / 2)
 		mod$plotWidth <- 650
@@ -400,6 +415,7 @@ regression.mod <- reactive({
 	formula <- paste(input$reg_var1, "~", paste(vars, collapse = " + "))
 	if(input$reg_stepwise) {
 		mod <- step(lm(as.formula(paste(input$reg_var1, "~ 1")), data = dat), scope = list(upper = formula), direction = 'forward')
+		# mod <- step(lm(as.formula(paste(input$reg_var1, "~ 1")), data = dat), k = log(nrow(dat)), scope = list(upper = formula), direction = 'both')
 	} else {
 		mod <- lm(formula, data = dat)
 	}
