@@ -59,9 +59,14 @@ observe({
   # loading all examples files (linked to helpfiles)
   if(is.null(input$loadExampleData) || input$loadExampleData == 0) return()
   isolate({
+
+    # setwd('~/Dropbox/radyant/inst/marketing/')
+
     path <- "www/examples/"
     examples <- list.files(path)
-   
+
+    # ex_frame1 <- data.frame(examples)
+    # ex_frame1$path <- path
 
     for(ex in examples) {
       ext <- file_ext(ex)
@@ -71,6 +76,9 @@ observe({
     # only available for my students
     path <- "www/MGT475_data/"
     examples <- list.files(path)
+
+    # ex_frame2 <- data.frame(examples)
+    # ex_frame2$path <- path
 
     for(ex in examples) {
       ext <- file_ext(ex)

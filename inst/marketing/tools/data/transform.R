@@ -282,6 +282,9 @@ output$transform_summary <- renderPrint({
 		cat("\nSummarize date variables:\n")
 		print(summary(dat[,isDate]))
 	}
+
+	# print(getwd())
+	
 })
 
 observe({

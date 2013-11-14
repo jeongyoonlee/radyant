@@ -14,9 +14,11 @@ output$vizvars2 <- renderUI({
 	dat <- getdata()
 	if(!input$vizvars1 %in% colnames(dat)) return()
 	if(is.Date(dat[,input$vizvars1])) {
-		selectInput(inputId = "vizvars2", label = "Y-variable", choices = as.list(cols[-which(cols == input$vizvars1)]), selected = "", multiple = TRUE)
+		# selectInput(inputId = "vizvars2", label = "Y-variable", choices = as.list(cols[-which(cols == input$vizvars1)]), selected = "", multiple = TRUE)
+		selectInput(inputId = "vizvars2", label = "Y-variable", choices = cols, selected = "", multiple = TRUE)
 	} else {
-		selectInput(inputId = "vizvars2", label = "Y-variable", choices = c("None" = "",as.list(cols[-which(cols == input$vizvars1)])), selected = "", multiple = FALSE)
+		# selectInput(inputId = "vizvars2", label = "Y-variable", choices = c("None" = "",as.list(cols[-which(cols == input$vizvars1)])), selected = "", multiple = FALSE)
+		selectInput(inputId = "vizvars2", label = "Y-variable", choices = c("None" = "",as.list(cols)), selected = "", multiple = FALSE)
 	}
 })
 
@@ -55,7 +57,8 @@ ui_Visualize <- function() {
 			  uiOutput("viz_color"),
 			  uiOutput("viz_facet_row"),
 			  uiOutput("viz_facet_col"),
-			  checkboxInput('viz_smooth', 'Smooth', value = FALSE),
+			  checkboxInput('viz_line', 'Line', value = FALSE),
+			  checkboxInput('viz_loess', 'Loess', value = FALSE),
 			  checkboxInput('viz_jitter', 'Jitter', value = FALSE)
 			),
 			div(class="row-fluid",
@@ -105,7 +108,8 @@ output$visualize <- renderPlot({
 
 				if(is.factor(dat[,input$vizvars1])) {
 				 	# updateCheckboxInput(session = session, inputId = "viz_jitter", label = "Jitter", value = TRUE)
-				 	updateCheckboxInput(session = session, inputId = "viz_smooth", label = "Smooth", value = FALSE)
+				 	updateCheckboxInput(session = session, inputId = "viz_line", label = "Line", value = FALSE)
+				 	updateCheckboxInput(session = session, inputId = "viz_loess", label = "Loess", value = FALSE)
 				  p <- ggplot(dat, aes_string(x=input$vizvars1, y=input$vizvars2, fill=input$vizvars1)) + geom_boxplot(alpha = .3)
 			  } else {
 			  	p <- ggplot(dat, aes_string(x=input$vizvars1, y=input$vizvars2)) + geom_point()
@@ -122,9 +126,10 @@ output$visualize <- renderPlot({
       p <- p + facet_grid(facets)
     
     if (input$viz_jitter) p <- p + geom_jitter()
-    if (input$viz_smooth) p <- p + geom_smooth(method = "lm", size = .75, linetype = "dotdash")
+    if (input$viz_line) p <- p + geom_smooth(method = "lm", fill = 'blue', alpha = .1, size = .75, linetype = "dashed", colour = 'black')
+    if (input$viz_loess) p <- p + geom_smooth(span = 1, size = .75, linetype = "dotdash")
     
-    print(p)
+   	suppressWarnings(suppressMessages(print(p)))
 
 }, width = viz_plot_width, height = viz_plot_height)
 

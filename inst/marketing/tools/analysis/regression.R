@@ -25,6 +25,8 @@ ui_correlation <- function() {
 }
 
 summary.correlation <- function(dat) {
+	
+	dat <- dat$dat
 
 	# calculate the correlation matrix with p-values
 	cmat <- Hmisc::rcorr(as.matrix(dat), type = input$cor_type)
@@ -56,6 +58,9 @@ summary.correlation <- function(dat) {
 }
 
 plot.correlation <- function(dat) {
+
+	dat <- dat$dat
+
 	# based mostly on http://gallery.r-enthusiasts.com/RGraphGallery.php?graph=137
 	panel.plot <- function(x, y) {
 	    usr <- par("usr"); on.exit(par(usr))
@@ -85,7 +90,10 @@ correlation <- reactive({
 	if(sum(vars %in% varnames()) != length(vars))  return("")
 
 	dat <- getdata()[,vars]
-	data.frame(lapply(dat,as.numeric))
+	dat <- data.frame(lapply(dat,as.numeric))
+
+	nc <- ncol(dat)
+	list('dat' = dat, 'plotHeight' = 150 * nc,  'plotWidth' = 150 * nc)
 })
 
 
@@ -149,7 +157,8 @@ ui_regression <- function() {
   	  checkboxInput(inputId = "reg_stepwise", label = "Select variables step-wise", value = FALSE)
   	),
     conditionalPanel(condition = "input.analysistabs == 'Plots'",
-      selectInput("reg_plots", "Regression plots:", choices = r_plots, selected = 'coef', multiple = FALSE)
+      # selectInput("reg_plots", "Regression plots:", choices = r_plots, selected = 'coef', multiple = FALSE)
+      selectInput("reg_plots", "Regression plots:", choices = r_plots, selected = NULL, multiple = FALSE)
     ),
     actionButton("saveres", "Save residuals")
 	  ),
@@ -170,7 +179,7 @@ summary.regression <- function(result) {
 		# cat("\n")
 	}
 	if(input$reg_vif) {
-		print(vif.regression(result))
+		print(vif.regression(result), digits = 3)
 		# cat("\n")
 	} 
 	if(!is.null(input$reg_var3)) {
@@ -183,7 +192,7 @@ summary.regression <- function(result) {
 }
 
 # main functions called from radyant.R
-r_plots <- list("Histograms" = "histlist", "Correlations" = "correlations", "Scatter" = "scatterlist", "Dashboard" = "dashboard",
+r_plots <- list("None" = "", "Histograms" = "histlist", "Correlations" = "correlations", "Scatter" = "scatterlist", "Dashboard" = "dashboard",
 		"Residual vs predictor" = "resid_vs_predictorlist", "Leverage plots" = "leverage_plots", "Coefficient plot" = "coef")
 	# "Actual vs Fitted" = 0, "Residuals vs Fitted" = 1, "Residual vs Row order" = 2, "Normal Q-Q" = 3)
 # r_plots <- list("Coefficient plot" = "coef", "Actual vs Fitted" = 0, "Residuals vs Fitted" = 1, "Normal Q-Q" = 2, "Scale-Location" = 3,
@@ -191,6 +200,8 @@ r_plots <- list("Histograms" = "histlist", "Correlations" = "correlations", "Sca
 # )
 
 plot.regression <- function(result) {
+
+	if(input$reg_plots == "") return()
 
 	mod <- fortify(result)
 
@@ -479,9 +490,13 @@ vif.regression <- function(result) {
 	if(input$reg_vif) {
 		if(length(input$reg_var2) > 1) {
 	  	cat("Variance Inflation Factors\n")
-	  	VIF <- as.matrix(vif(result))[,1]
+
+	  	VIF <- vif(result)
 	  	VIF <- sort(VIF, decreasing = TRUE)
-			t(data.frame(VIF))
+
+	  	# VIF <- as.matrix(vif(result))[,1]
+	  	# VIF <- sort(VIF, decreasing = TRUE)
+	  	ifelse(length(VIF) < 8, return(VIF), return(data.frame(VIF)))
 		} else {
 	  	cat("Insufficient number of independent variables selected to calculate VIF scores\n")
 		}

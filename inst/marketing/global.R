@@ -4,7 +4,8 @@
 # options(shiny.reactlog=TRUE)
 # options(shiny.trace=TRUE)
 
-options(width = 150, digits = 3)
+# options(width = 150, digits = 3)
+options(digits = 3)
 
 # creating a reactivevalues store 
 values <- reactiveValues()
