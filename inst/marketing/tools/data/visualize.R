@@ -111,6 +111,13 @@ output$visualize <- renderPlot({
 				 	updateCheckboxInput(session = session, inputId = "viz_line", label = "Line", value = FALSE)
 				 	updateCheckboxInput(session = session, inputId = "viz_loess", label = "Loess", value = FALSE)
 				  p <- ggplot(dat, aes_string(x=input$vizvars1, y=input$vizvars2, fill=input$vizvars1)) + geom_boxplot(alpha = .3)
+			  } else if(is.factor(dat[,input$vizvars2])) {
+
+				 	updateCheckboxInput(session = session, inputId = "viz_line", label = "Line", value = FALSE)
+				 	updateCheckboxInput(session = session, inputId = "viz_loess", label = "Loess", value = FALSE)
+				  p <- ggplot(dat, aes_string(x=input$vizvars2, y=input$vizvars1, fill=input$vizvars2)) + geom_boxplot(alpha = .3) +
+				 	 coord_flip()
+
 			  } else {
 			  	p <- ggplot(dat, aes_string(x=input$vizvars1, y=input$vizvars2)) + geom_point()
 			  }
