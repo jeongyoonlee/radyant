@@ -4,8 +4,7 @@
 # options(shiny.reactlog=TRUE)
 # options(shiny.trace=TRUE)
 
-# options(width = 150, digits = 3)
-options(digits = 3)
+options(width = 150, digits = 3)
 
 # creating a reactivevalues store 
 values <- reactiveValues()
@@ -163,7 +162,7 @@ helpPopup <- function(title, content, placement=c('right', 'top', 'left', 'botto
 
 helpModal <- function(title, link, content) {
   html <- sprintf("<div id='%s' class='modal hide fade in' style='display: none; '>
-                     <div class='modal-header'><a class='close' data-dismiss='modal'>×</a>
+                     <div class='modal-header'><a class='close' data-dismiss='modal' href='#'>&times;</a>
                        <h3>%s</h3>
                      </div>
                      <div class='modal-body'>%s</div>

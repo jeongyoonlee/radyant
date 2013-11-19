@@ -16,6 +16,8 @@ shinyUI(
 
       wellPanel(
         uiOutput("datasets")
+        # drop to browser when clicked
+        # uiOutput("console_button")
       ),
 
       # find the appropriate UI

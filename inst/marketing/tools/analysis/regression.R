@@ -59,7 +59,9 @@ summary.correlation <- function(dat) {
 
 plot.correlation <- function(dat) {
 
-	dat <- dat$dat
+	# needed because this function is also called from the regression 
+	# plotting reactive
+	if(class(dat) == 'list') dat <- dat$dat
 
 	# based mostly on http://gallery.r-enthusiasts.com/RGraphGallery.php?graph=137
 	panel.plot <- function(x, y) {

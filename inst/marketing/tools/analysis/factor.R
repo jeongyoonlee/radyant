@@ -29,11 +29,15 @@ summary.preFactor <- function(result) {
 	cat("p-value: ", round(btest$p.value,3), "\n")
 	cat("H0: Correlation Matrix = Identity Matrix, i.e., variables are not correlated\n")
 
-	cat("\nKaiser-Meyer-Olkin measure of sampling adequacy\nKMO: ", round(prefac$KMO,3), "\n")
-	cat("\nMeasures of sampling adequacy:\n")
-	print(prefac$MSA, digits = 3)
-	cat("\n")
+	# cat("\nKaiser-Meyer-Olkin measure of sampling adequacy\nKMO: ", round(prefac$KMO,3), "\n")
+	# cat("\nMeasures of sampling adequacy:\n")
+	# print(prefac$MSA, digits = 3)
+ #  cat("\n")
 
+  cat("\nVariable collinearity:\n")
+  print(result$pre_r2, digits = 3)
+
+	cat("\n")
 	ev <- prefac$Eigenvalues[,'0']
 	ev.var <- ev/sum(ev)
 	ev.cvar <- cumsum(ev.var)
@@ -63,14 +67,29 @@ preFactor <- reactive({
 
 	btest <- cortest.bartlett(cor(dat), nrow(dat))
 
+  # ??cortest.bartlett
 	# require(psych)
 	# require(rela)
 	# dat <- microvan[,3:32]
 	# head(dat)
-	prefac <- local_paf(as.matrix(dat))
-	# prefac <- paf(as.matrix(dat))
 
-	return(list(btest = btest, prefac = prefac))
+  # prefac <- paf(as.matrix(dat))
+
+  prefac <- local_paf(as.matrix(dat))
+
+  # head(mtcars)
+  # dat <- mtcars[,c('cyl','disp','cyl')]
+
+  cr <- cor(dat)
+  if(det(cr) == 0) {
+    pre_r2 <- "The selected variables are perfectly collinear. Please check the correlations and remove any
+    variable with a correlation of 1 or -1 from the analysis"
+  } else {
+    pre_r2 <- data.frame(1 - (1 / diag(solve(cr))))
+    colnames(pre_r2) <- 'R-squared'
+  }
+
+	return(list(btest = btest, prefac = prefac, pre_r2 = pre_r2))
 })
 
 # variable selection - factor analysis

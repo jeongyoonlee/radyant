@@ -21,6 +21,8 @@ output$pmap_attr <- renderUI({
 
 output$pmap_pref <- renderUI({
   if(is.null(input$pmap_attr)) return()
+  if(is.null(inChecker(c(input$pmap_pref)))) return()
+
 
   varCls <- getdata_class()
  	isNum <- "numeric" == getdata_class() | "integer" == getdata_class()
@@ -71,7 +73,8 @@ plot.pmap <- function(result) {
 	std.m <- input$pmap_scaling * out$loadings
 	std.scores <- out$scores
 	lab_buf <- 1.1
-	max.max <- max(abs(std.m),abs(std.scores),abs(std.pc)) * 1.1	# adding a buffer so the labels don't move off the screen
+	# max.max <- max(abs(std.m),abs(std.scores),abs(std.pc)) * 1.1	# adding a buffer so the labels don't move off the screen
+	max.max <- max(abs(std.m),abs(std.scores)) * 1.1	# adding a buffer so the labels don't move off the screen
 
 	if(out$nr.dim == 3) {
 		op <- par(mfrow=c(3,1))
@@ -96,7 +99,10 @@ plot.pmap <- function(result) {
 					# textplot(std.scores[,i], std.scores[,j]*lab_buf, out$brand.names, cex = input$pmap_fontsz, col="darkgreen", new = FALSE)
 					textplot(std.scores[,i], std.scores[,j]+(.04*max.max), out$brand.names, cex = input$pmap_fontsz, new = FALSE)
 				}
-			
+
+				# require(wordcloud)
+				# wl <- data.frame(wordlayout(loc[,1],loc[,2],rownames(loc)))
+
 				if("attr" %in% input$pmap_plot) {
 					# text(lbf*std.m[,i], std.m[,j], input$pmap_attr, col="darkblue", cex = 1.2, adj=c(0.5,-.3))
 					textplot(std.m[,i]*lab_buf, std.m[,j]*lab_buf, input$pmap_attr, cex = input$pmap_fontsz, col = "darkblue", new = FALSE)
@@ -150,7 +156,8 @@ pmap <- reactive({
 
 	pc <- std.pc <- 0
 	if(!is.null(input$pmap_pref)) {
-		pc <- cor(dat[,input$pmap_pref],scores)
+		pc <- data.frame(cor(dat[,input$pmap_pref],scores))
+		pc$communalities <- rowSums(pc^2)
 		rownames(pc) <- input$pmap_pref
 	}
 

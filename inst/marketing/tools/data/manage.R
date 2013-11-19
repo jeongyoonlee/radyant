@@ -85,6 +85,9 @@ observe({
       loadUserData(ex, paste0(path,ex))
     }
 
+    # sorting useful since there can be multiple sets of files
+    values[['datasetlist']] <- sort(values[['datasetlist']])
+
     # updateRadioButtons(session = session, inputId = "dataType", label = "Load data:", c(".rda" = "rda", ".csv" = "csv", "clipboard" = "clipboard", "examples" = "examples"), selected = ".rda")
   })
 })

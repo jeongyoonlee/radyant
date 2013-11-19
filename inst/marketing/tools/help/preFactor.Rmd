@@ -1,1 +1,31 @@
-In progress ...
+The goal of Factor Analysis is to reduce the dimensionality of the data without signficant loss of information. The tool tries to achieve this goal by looking for structure in the correlation matrix of the variables included in the analysis. The research will usually try to link each variable to an underlying factor and then then provide a discriptive lable for each factor.
+
+# Example: Toothpaste
+
+The first step in factor analysis is to determine if the data has the appropriate characteristics for the analysis
+Data that show a limited amount of correlation between the variables of interest are generally not appropriate for factor analysis
+Three criteria that are commonly used to test if the data are suited for factor analysis are Bartlett’s test for sphericity, the KMO-test, and Measures of Sampling Adequacy (MSA) for each variable
+The KMO and Bartlett’ test evaluate all available data together. A KMO value over 0.6 and a significance level for the Bartlett’s test below .05 indicate there is a reasonable amount of correlation in the data
+MSA values how strongly a single variable is correlated with all the other variables combined. Values above .5 are generally considered acceptable
+
+
+Bartlett’s test statistic is large and significant (p-value very close to 0) as desired
+
+
+Kaiser-Meyer-Olkin (KMO) > 0.6 and thus acceptable 
+
+The Measures of Sampling Adequacy (MSA) are > 0.5 so all variables can be used in the analysis
+
+Note: You can think of the KMO statistic as an average of the MSA value calculated for the different variables
+ofactor analysis, the next step is to determine the number of factors needed to explain the correlations among the variables
+
+
+Factors that do not explain even as much variance in the data as an ‘average’ variable are generally omitted from further consideration. These factors will have eigenvalues < 1 in the output
+A further criteria that is often used to determine the number of factors is the scree-plot. This is a plot of the eigenvalues against the number of factors, in order of extraction. Often a break or ‘elbow’ is visible in the plot. Factors up to and including this elbow are then selected for further analysis, assuming they all have eigenvalues above 1
+A set of factors that explain > 70% of the variance in the original data is generally considered acceptable
+
+At first glance the Scree Plot seems to suggest that 3 factors should be extracted (i.e., look for the ‘elbow’). However, since the eigenvalue for the third factor is < 1 we choose to extract 2 factors 
+
+From the table below we see that the increase in cumulative % explained variance is small going from 2 to 3 factors. This is confirmed by the fact that the eigenvalue for factor 3 is smaller than 1 (= .442). Again, we choose 2 factors
+
+The first 2 factors capture 82% of the variance in the original data which is excellent.

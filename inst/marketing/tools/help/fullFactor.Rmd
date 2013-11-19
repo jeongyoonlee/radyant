@@ -1,1 +1,38 @@
 In progress ...
+
+Once we have determined the number of factors we extract and rotate them. The factors are rotated to generate a solution where, to the extent possible, a variable has a high loading on only one factor. This is an important benefit because it makes it easier to interpret what the factor represents
+While there are numerous algorithms to rotate a factor loadings matrix the most commonly used is Varimax rotation.
+The rotated factor loadings will be used to determine labels or names for the different factors. Use a high-lighter and mark the highest factor loading, in absolute value, in each row (i.e., the highest loading for for each variable in the analysis). Together, the variables highlighted in each column (i.e., for each factor) will help us to understand what the factor represents.
+The final step is to generate the factor scores. You can think of these scores as a weighted average of the variables that are linked to a factor. These scores approximate the scores that a respondent would have provided if we were able to ask about the factor in a single question
+
+What does rotation do?
+
+Two new variables were added to the toothpaste data file. These are the factor scores, i.e., the respondents inferred ratings on the factors
+
+
+The numbers in the table are the correlations of the 6 variables with the 2 Factors. For example, variable v1 has a correlation of .962 with Factor 1 and a correlation of -.031 with Factor 2. As such v1 will play a big role in naming  Factor 1 but an insignificant role in naming Factor 2.
+
+Factor 1: Health Benefits
+Factor 2: Social Benefits
+
+When ‘Save loadings’ is selected an Excel file will be opened which shows the factor loadings and highlights the variables that are most closely linked to each factor. Similarities between the variables (i.e., questions) linked to a factor will help us to determine an appropriate label or name for the factor.
+
+Two new variables were added to the toothpaste data file. These are the factor scores, i.e., the respondents inferred ratings on the factors
+
+In the Dataviewer click on ‘Variable View’ and change variable names for the last two variables (i.e., the factor scores)
+
+Determine if the data is appropriate for factor analysis (Bartlett, KMO, and MSA measure from ‘Pre-factor diagnostics’)
+Determine the number of factors (Scree-plot and eigenvalues > 1 from ‘Pre-factor diagnostics’)
+Extract the (rotated) factor solution. This will produce: 
+Factor loadings: Correlations between attributes and factors
+Factor scores: Inferred rating on the new factors
+Interpret the factors using the factor loadings
+Mark the highest factor loading, in absolute value, in each row (i.e., for each variable)
+
+
+We can use factor scores in other analyses (e.g., cluster analysis or regression)
+
+
+	If you want some more practice open the ‘shopping.rda’ data set and see if you get the same results as those shown below. Did I choose the right number of factors? Why (not)?
+
+If you really want to geek-out you can try running a cluster analysis on the factor scores for the shopping data. Do you get the same results as those shown below?

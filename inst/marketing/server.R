@@ -1,7 +1,9 @@
 # only write if running on developer computer
+# dev_comp = FALSE
 if(file.exists("/Users/vnijs/radyant")) {
 	dbox_remote <- file.info(list.files(recursive = TRUE, include.dirs = TRUE))
 	save(dbox_remote, file = "dbox_remote.rda")
+	# dev_comp = TRUE
 }
 
 shinyServer(function(input, output, session) {
@@ -105,6 +107,26 @@ shinyServer(function(input, output, session) {
   		return(tabs)
 	  }
 	})
+
+	# debuggin button should only show for me
+	# output$console_button <- renderUI({
+	# 	if(dev_comp) actionButton("console","server console")
+	# })
+
+ #  observe(label="console",{
+ # 	  # if(is.null(input$console) || input$console == 0) return()
+	# 	if(dev_comp) {
+	#     if(!is.null(input$console) && input$console != 0) {
+	#    		options(browserNLdisabled=TRUE)
+ #  	    saved_console<-".RDuetConsole"
+ # 	  	  if (file.exists(saved_console)) load(saved_console)
+	#  	    cvalues <- reactiveValuesToList(values)
+	#  	    cinput <- reactiveValuesToList(input)
+	#       isolate(browser())
+	#  	    save(file=saved_console,list=ls(environment()))
+	#  	  }
+	# 	}
+ #  })
 
 	# From Joe Cheng's post at:
 	# https://groups.google.com/forum/?fromgroups=#!searchin/shiny-discuss/close$20r/shiny-discuss/JptpzKxLuvU/boGBwwI3SjIJ
