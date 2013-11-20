@@ -22,17 +22,16 @@ summary.preFactor <- function(result) {
 	btest <- result$btest
 	prefac <- result$prefac
 
-	cat("\n\nPre-factor analysis diagnostics:\n\n")
+	cat("Pre-factor analysis diagnostics:\n\n")
 	cat("Bartlett test of sphericity\n")
 	cat("Chi-square: ", round(btest$chisq,3), "\n")
 	cat("Degrees of freedom: ", btest$df, "\n")
 	cat("p-value: ", round(btest$p.value,3), "\n")
 	cat("H0: Correlation Matrix = Identity Matrix, i.e., variables are not correlated\n")
 
-	# cat("\nKaiser-Meyer-Olkin measure of sampling adequacy\nKMO: ", round(prefac$KMO,3), "\n")
+	cat("\nKaiser-Meyer-Olkin measure of sampling adequacy\nKMO: ", round(prefac$KMO,3), "\n")
 	# cat("\nMeasures of sampling adequacy:\n")
 	# print(prefac$MSA, digits = 3)
- #  cat("\n")
 
   cat("\nVariable collinearity:\n")
   print(result$pre_r2, digits = 3)
