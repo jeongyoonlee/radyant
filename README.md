@@ -18,10 +18,10 @@ Interactive business analytics using [R](http://www.r-project.org/) and [Shiny](
 To get the app click the 'Download ZIP' button and unzip the file to, for example, your Desktop. When you start the app for the first time a number of required packages will be installed. To start the app, copy and paste the command below into the R(studio) terminal (assuming you unzipped to your Desktop):
 
 	# on windows
-	shiny::runApp('~/../Desktop/radyant/')
+	shiny::runApp('~/../Desktop/radyant-master/inst/marketing/')
 
  	# on mac
-	shiny::runApp('~/Desktop/radyant/')
+	shiny::runApp('~/Desktop/radyant-master/inst/marketing/')
 
 ### License
 
