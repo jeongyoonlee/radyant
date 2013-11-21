@@ -446,15 +446,20 @@ plot.crosstab <- function(result) {
 		 					x = ''))
 	}
 
-	plots[['observed']] <- ggplot(dat, aes_string(x = input$ct_var1, fill = input$ct_var2)) + geom_histogram(position = "dodge", alpha=.3) +
+	plots[['stacked']] <- ggplot(dat, aes_string(x = input$ct_var1, fill = input$ct_var2)) + geom_bar(position = "fill", alpha=.3) +
 		labs(list(title = paste("Crosstab of ",input$ct_var2," versus ",input$ct_var1, sep = ""), 
-				x = '', y = "Count", fill = input$ct_var2))
+				x = "", y = "", fill = input$ct_var2))
+
+	# plots[['observed']] <- ggplot(dat, aes_string(x = input$ct_var1, fill = input$ct_var2)) + geom_histogram(position = "dodge", alpha=.3) +
+	# 	labs(list(title = paste("Crosstab of ",input$ct_var2," versus ",input$ct_var1, sep = ""), 
+	# 			x = '', y = "Count", fill = input$ct_var2))
 
 	print(do.call(grid.arrange, c(plots, list(ncol = 1))))
 }
 
-crosstab <- reactive({
 
+
+crosstab <- reactive({
 
 	ret_text <- "This analysis requires variables of type factor. Please select another dataset."
  	if(is.null(input$ct_var1) || is.null(input$ct_var2)) return(ret_text)
@@ -478,4 +483,3 @@ crosstab <- reactive({
 
 	list('cst' = cst, 'table' = tab, plotHeight = 400 * nr.plot)
 })
-

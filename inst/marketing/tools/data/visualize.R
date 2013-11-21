@@ -154,7 +154,13 @@ output$visualize <- renderPlot({
 					 	# updateCheckboxInput(session = session, inputId = "viz_line", label = "Line", value = FALSE)
 					 	# updateCheckboxInput(session = session, inputId = "viz_loess", label = "Loess", value = FALSE)
 					  # p <- ggplot(dat, aes_string(x=i, y=j, fill=i)) + geom_boxplot(alpha = .3)
-					  plots[[i]] <- ggplot(dat, aes_string(x=i, y=j, fill=i)) + geom_boxplot(alpha = .3)
+
+					  if(is.factor(dat[,j])) {
+					  	plots[[i]] <- ggplot(dat, aes_string(x=i, fill=j)) + geom_bar(position = "fill", alpha=.3) + 
+					  		labs(list(y = ""))
+					  } else {
+						  plots[[i]] <- ggplot(dat, aes_string(x=i, y=j, fill=i)) + geom_boxplot(alpha = .3)
+						}
 				  } else if(is.factor(dat[,j])) {
 
 					 	# updateCheckboxInput(session = session, inputId = "viz_line", label = "Line", value = FALSE)
@@ -179,20 +185,17 @@ output$visualize <- renderPlot({
 					  plots[[i]] <- plots[[i]] + facet_grid(facets)
 				}
 		    
-		    # if (input$viz_jitter) p <- p + geom_jitter()
-		    if (input$viz_jitter) plots[[i]] <- plots[[i]] + geom_jitter()
+				if(!(is.factor(dat[,i]) & is.factor(dat[,j]))) {
+			    if (input$viz_jitter) plots[[i]] <- plots[[i]] + geom_jitter()
+				} 
 
-				# if(!is.factor(dat[,input$vizvars1]) && !is.factor(dat[,input$vizvars2])) {
-				if(!is.factor(dat[,i]) && !is.factor(dat[,j])) {
+				if(!is.factor(dat[,i]) & !is.factor(dat[,j])) {
 			    if (input$viz_color != '') plots[[i]] <- plots[[i]] + aes_string(color=input$viz_color) + scale_fill_brewer()
 			    if (input$viz_line) plots[[i]] <- plots[[i]] + geom_smooth(method = "lm", fill = 'blue', alpha = .1, size = .75, linetype = "dashed", colour = 'black')
 			    if (input$viz_loess) plots[[i]] <- plots[[i]] + geom_smooth(span = 1, size = .75, linetype = "dotdash")
-			  } else {
-				 	# updateCheckboxInput(session = session, inputId = "viz_line", label = "Line", value = FALSE)
-				 	# updateCheckboxInput(session = session, inputId = "viz_loess", label = "Loess", value = FALSE)
-				 	# updateSelectInput(session = session, inputId = "viz_color", selected = "None")
-					# updateSelectInput(session = session, inputId = "tr_transfunction", choices = trans_options, selected = "None")
-				}
+			    if (input$viz_jitter) plots[[i]] <- plots[[i]] + geom_jitter()
+			  } 
+
 			}
 		}
 

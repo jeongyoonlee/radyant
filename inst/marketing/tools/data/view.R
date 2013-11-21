@@ -45,4 +45,5 @@ output$dataviewer <-renderDataTable({
   # html <- sub("<TABLE border=1>","<table class='table table-condensed table-hover'>", html)
   # html
 
-}, options = list(bSortClasses = TRUE, aLengthMenu = c(10, 20, 30, 50), iDisplayLength = 10))
+}, options = list(bSortClasses = TRUE, bCaseInsensitive = TRUE, 
+  aLengthMenu = c(10, 20, 30, 50), iDisplayLength = 10))
