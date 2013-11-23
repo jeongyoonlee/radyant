@@ -81,7 +81,7 @@ trans_options <- list("None" = "", "Log" = "log", "Square" = "sq", "Square-root"
 	"Invert" = "inv", "Median split" = "msp", "Deciles" = "dec", "As factor" = "fct",  "As number" = "num", "As integer" = "int", "As character" = "ch",
 	"As date (mdy)" = "d_mdy", "As date (dmy)" = "d_dmy", "As date (ymd)" = "d_ymd")
 
-trans_types <- list("----------" = "", "Change" = "change", "Create" = "create", "Clipboard" = "clip", "Recode" = "recode", "Rename" = "rename", "Reorder columns" = "reorder_cols", "Reorder levels" = "reorder_levs", "Remove" = "remove")
+trans_types <- list("None" = "", "Change" = "change", "Create" = "create", "Clipboard" = "clip", "Recode" = "recode", "Rename" = "rename", "Reorder columns" = "reorder_cols", "Reorder levels" = "reorder_levs", "Remove" = "remove")
 
 ui_Transform <- function() {
 	# Inspired by Ian Fellow's transform ui in JGR/Deducer
@@ -89,9 +89,9 @@ ui_Transform <- function() {
     uiOutput("tr_columns"),
 
    	# radioButtons("tr_changeType", "", c("Change" = "change", "Create" = "create", "Clipboard" = "clip", "Recode" = "recode", "Rename" = "rename", "Reorder" = "reorder", "Remove" = "remove"), selected = "Change"),
-    selectInput("tr_changeType", "Transformation type:", trans_types, selected = "----------"),
+    selectInput("tr_changeType", "Transformation type:", trans_types, selected = "None"),
     conditionalPanel(condition = "input.tr_changeType == 'change'",
-	    selectInput("tr_transfunction", "Change columns:", trans_options)
+	    selectInput("tr_transfunction", "Apply function:", trans_options)
     ),
     conditionalPanel(condition = "input.tr_changeType == 'create'",
 	    returnTextInput("tr_transform", "Create (e.g., x = y - z):", '')
@@ -139,10 +139,19 @@ ui_Transform <- function() {
 transform_main <- reactive({
 
 	if(input$datatabs != 'Transform') return()
-	if(is.null(input$tr_changeType) || input$tr_changeType == '') return()
 	if(is.null(input$datasets)) return()
+	# if(is.null(input$tr_changeType) || input$tr_changeType == '') return()
+	if(is.null(input$tr_changeType)) return()
 
 	dat <- getdata()
+
+	# if(input$tr_changeType == "") {
+	# 	if(!is.null(input$tr_columns)) {
+	# 		# if(!all(input$tr_columns %in% colnames(dat))) return()
+	# 		dat <- data.frame(dat[, input$tr_columns, drop = FALSE])
+	# 	}
+	# 	return(dat)
+	# }
 
 	if(input$tr_changeType == 'reorder_cols') {
     if(is.null(input$tr_reorder_cols)) {
@@ -153,6 +162,8 @@ transform_main <- reactive({
  	  return(dat[,ordVars, drop = FALSE])
   }
 
+	# if(input$tr_changeType == "") {
+
 	if(!is.null(input$tr_columns)) {
 
 		if(!all(input$tr_columns %in% colnames(dat))) return()
@@ -162,7 +173,10 @@ transform_main <- reactive({
 			dat <- cbind(dat,colwise(input$tr_transfunction)(dat))
 			colnames(dat) <- cn
 		}
+	} else {
+		if(input$tr_changeType != "") return()
 	}
+
 
 	if(!is.null(input$tr_columns) & input$tr_changeType == 'reorder_levs') {
     if(!is.null(input$tr_reorder_levs)) {

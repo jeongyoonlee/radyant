@@ -33,7 +33,7 @@ ui_hclustering <- function() {
     # selectInput("hc_nrClus", label = "Number of clusters", choices = 2:20, selected = NULL, multiple = FALSE),
     # actionButton("hc_saveclus", "Save cluster membership")
   	),
-		helpModal('Hierarchical cluster analysis','hcclustering',includeMarkdown("tools/help/hcclustering.md"))
+		helpModal('Hierarchical cluster analysis','hcclustering',includeHTML("tools/help/hcclustering.html"))
 	)
 }
 
@@ -61,7 +61,7 @@ plot.hclustering <- function(result) {
 	} else {
 		height = rev(result$height[result$height > input$hc_cutoff])
 		nr_of_clusters = 1:length(height)
-		plot(nr_of_clusters,height, main = "Scree plot", xlab = "Nr of clusters", ylab = "Cluster heterogeneity", type = 'b')
+		plot(nr_of_clusters,height, main = "Scree plot", xlab = "Nr of clusters", ylab = "Heterogeneity", type = 'b')
 	}
 }
 
@@ -139,10 +139,10 @@ ui_kmeansClustering <- function() {
   	conditionalPanel(condition = "input.km_hcinit == false", 
 	    numericInput("km_seed", "Set random seed:", 1234, min = 0)
 	  ),
-    numericInput("km_nrClus", "Number of clusters", 2, min = 2),
+    numericInput("km_nrClus", "Number of clusters:", 2, min = 2),
     actionButton("km_saveclus", "Save cluster membership")
   	),
-		helpModal('Kmeans cluster analysis','kmeansClustering',includeMarkdown("tools/help/kmeansClustering.md"))
+		helpModal('Kmeans cluster analysis','kmeansClustering',includeHTML("tools/help/kmeansClustering.html"))
 	)
 }
 

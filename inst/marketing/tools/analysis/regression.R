@@ -300,7 +300,7 @@ plot.regression <- function(result) {
 		for(i in reg_var2) { 
 			if(getdata_class()[i] == 'factor') {
 				# plots[[i]] <- ggplot(dat, aes_string(x=i, y=input$reg_var1)) + geom_boxplot(fill = 'blue', alpha = .3)
-				plots[[i]] <- ggplot(dat, aes_string(x=i, y=reg_var1)) + geom_boxplot(fill = 'blue', alpha = .3)
+				plots[[i]] <- ggplot(dat, aes_string(x=i, y=reg_var1, fill=i)) + geom_boxplot(alpha = .3)
 			} else {
 				# plots[[i]] <- ggplot(dat, aes_string(x=i, y=input$reg_var1)) + geom_point() + geom_smooth(size = .75, linetype = "dotdash")
 				plots[[i]] <- ggplot(dat, aes_string(x=i, y=reg_var1)) + geom_point() + geom_smooth(span = 1, size = .75, linetype = "dotdash")

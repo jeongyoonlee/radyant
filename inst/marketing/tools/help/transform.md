@@ -2,7 +2,7 @@ Change, create, add, reorder, and remove variables in the data.
 
 #### Change
 
-When you select Change from the 'Transformation type' drop-down another drop-down menu is shown that will allow you do apply common transformations to one or more variables in your data. For example, to take the (natural) log of a variable select the variable you want to change and choose Log from the drop-down menu. A new variable is created with the prefix 'log.'. Click the 'Save changes' button to add the variable(s) to the data set. A description of the transformation functions included in Radyant is provided below.
+When you select Change from the 'Transformation type' drop-down another drop-down menu is shown that will allow you do apply common transformations to one or more variables in your data. For example, to take the (natural) log of a variable select the variable you want to change and choose Log from the 'Apply function' menu. A new variable is created with the prefix 'log.'. Click the 'Save changes' button to add the variable(s) to the data set. A description of the transformation functions included in Radyant is provided below.
 
 #### Create
 

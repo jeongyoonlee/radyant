@@ -8,7 +8,8 @@ shinyUI(
 
       # tags$head(tags$script(src = 'https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML', type = 'text/javascript') # ),
       includeCSS('www/style.css'),
-      tags$head(tags$script(src = "js/jquery-ui.min.js")),
+      # tags$head(tags$script(src = "js/jquery-ui.min.js")),
+      tags$head(tags$script(src = "js/jquery-ui.custom.min.js")),
       # tags$head(tags$script(src = "js/lr.js")),
       # includeHTML("www/js/sel2.js"),
       # includeHTML('www/js/lr.js'), 

@@ -330,3 +330,29 @@ ca_theTable <- function(result) {
 	list('PW' = PW.df, 'IW' = IW, 'plot_ylim' = plot_ylim)
 }
 
+# code for 'exploded logistic regression' when ranking data is provided
+# require(MASS)
+# greenwind$rnk <- ordered(as.factor(19 - greenwind$rank))
+# levels(greenwind$rnk)
+# greenwind$rnk
+# head(greenwind)
+# greenwind$price <- factor(greenwind$price, levels = c("1.59","1.39","1.19"))
+# greenwind$brand <- factor(greenwind$brand, levels = c("Glory","K2R","Bissell"))
+# levels(greenwind$brand)
+# greenwind$brand
+
+# m <- polr(rnk ~ design + brand + price + ghks + mbg, data = greenwind, Hess = TRUE)
+# summary(m)
+# cf <- coef(m)
+# cf <- cf / max(abs(cf))
+# cf
+
+# greenwind$rnk_lm <- 19 - greenwind$rank
+# l <- lm(rnk_lm ~ design + brand + price + ghks + mbg, data = greenwind)
+# summary(l)
+# cl <- coef(l)
+# cl <- cl / max(abs(cl))
+# cl
+
+# df <- data.frame('cf' = cf, 'cl' = cl[-1])
+# print(round(df,1), digits = 1)
