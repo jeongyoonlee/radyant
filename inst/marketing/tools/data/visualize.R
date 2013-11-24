@@ -13,7 +13,8 @@ output$vizvars2 <- renderUI({
 	if(is.null(input$vizvars1)) return()
 
 	dat <- getdata()
-	if(!input$vizvars1 %in% colnames(dat)) return()
+	# if(!input$vizvars1 %in% colnames(dat)) return()
+	if(sum(input$vizvars1 %in% colnames(dat)) != length(input$vizvars1)) return()
 	if(is.Date(dat[,input$vizvars1])) {
 		# selectInput(inputId = "vizvars2", label = "Y-variable", choices = as.list(cols[-which(cols == input$vizvars1)]), selected = "", multiple = TRUE)
 		selectInput(inputId = "vizvars2", label = "Y-variable", choices = cols, selected = "", multiple = TRUE)
@@ -67,6 +68,7 @@ ui_Visualize <- function() {
 			  checkboxInput('viz_loess', 'Loess', value = FALSE),
 			  checkboxInput('viz_jitter', 'Jitter', value = FALSE)
 			),
+	    returnTextInput("viz_select", "Subset (e.g., mpg > 20 & vs == 1)", ''),
 			div(class="row-fluid",
 	    	div(class="span6",numericInput("viz_plot_height", label = "Plot height:", min = 100, step = 50, value = 650)),
 	      div(class="span6", numericInput("viz_plot_width", label = "Plot width:", min = 100, step = 50, value = 650))
@@ -100,6 +102,17 @@ output$visualize <- renderPlot({
 	# if(!input$vizvars1 %in% colnames(dat)) return()
 	if(sum(input$vizvars1 %in% colnames(dat)) != length(input$vizvars1)) return()
 
+  if(input$viz_select != '') {
+    selcom <- input$viz_select
+    selcom <- gsub(" ", "", selcom)
+    seldat <- try(do.call(subset, list(dat,parse(text = selcom))), silent = TRUE)
+    if(!is(seldat, 'try-error')) {
+      if(is.data.frame(seldat)) {
+        dat <- seldat
+        seldat <- NULL
+      }
+    }
+  }
 
 	# dat <- mtcars
 	# input <- list()
