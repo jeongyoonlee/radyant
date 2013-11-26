@@ -36,6 +36,9 @@ shinyServer(function(input, output, session) {
 	      conditionalPanel(condition = "input.man_add_descr == true",
  	  	  	HTML("<label>Add data description:</label>"),
 		  	  tags$textarea(id="man_data_descr", rows="10", cols="12", dataDescriptionOutput('md'))
+
+		  	  # http://plugins.jquery.com/autosize/
+
 		  	)
      	),
       # tabPanel("View", htmlOutput("dataviewer")),
@@ -72,7 +75,7 @@ shinyServer(function(input, output, session) {
 		# }
 
 		text <- values[[dataDescr]]
- 		if(is.null(text)) {
+ 		if(is.null(text) || text == "") {
  			return("")
  		} else {
 			if(ret == 'md') {

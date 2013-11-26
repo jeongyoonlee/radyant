@@ -19,10 +19,13 @@ ui_Manage <- function() {
     wellPanel(
       radioButtons(inputId = "saveAs", label = "Save data:", c(".rda" = "rda", ".csv" = "csv", "clipboard" = "clipboard"), selected = ".rda"),
       checkboxInput("man_add_descr","Add/edit data description", FALSE),
+      conditionalPanel(condition = "input.man_add_descr == true",
+        actionButton('updateDescr', 'Update description')
+      ),
       conditionalPanel(condition = "input.saveAs == 'clipboard'",
         actionButton('saveClipData', 'Copy data')
       ),
-      conditionalPanel(condition = "input.saveAs != 'clipboard'",
+      conditionalPanel(condition = "input.saveAs != 'clipboard' && input.man_add_descr == false",
         downloadButton('downloadData', 'Save data')
       )
     ),
@@ -52,6 +55,15 @@ observe({
     values[['xls_data']] <- as.data.frame(dat)
     values[['datasetlist']] <- unique(c('xls_data',values[['datasetlist']]))
     updateRadioButtons(session = session, inputId = "dataType", label = "Load data:", c(".rda" = "rda", ".csv" = "csv", "clipboard" = "clipboard", "examples" = "examples"), selected = ".rda")
+  })
+})
+
+observe({
+  # 'reading' data to clipboard
+  if(is.null(input$updateDescr) || input$updateDescr == 0) return()
+  isolate({
+    values[[paste0(input$datasets,"_descr")]] <- input$man_data_descr
+    updateCheckboxInput(session = session, "man_add_descr","Add/edit data description", FALSE)
   })
 })
 

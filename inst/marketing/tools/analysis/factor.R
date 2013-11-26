@@ -50,7 +50,7 @@ plot.preFactor <- function(result) {
 
 	prefac <- result$prefac
 	ev <- prefac$Eigenvalues[,'0']
-	plot(ev, type = 'b', col = 'blue', main = "Screeplot of Eigenvalues", ylab = "Eigenvalues", xlab = "# of factors")
+	plot(ev, type = 'b', main = "Screeplot of Eigenvalues", ylab = "Eigenvalues", xlab = "# of factors")
 	abline(1,0, col = 'red')
 }
 

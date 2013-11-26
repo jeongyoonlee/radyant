@@ -23,6 +23,11 @@ select {
 
 textarea { 
   width: 650px; 
+  /*max-height: 200px;*/
+  /*overflow: auto;*/
+  /*height: auto;*/
+  
+  /*http://plugins.jquery.com/autosize/*/
 }
 
 #tr_copyAndPaste {
