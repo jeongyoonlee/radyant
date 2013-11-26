@@ -4,69 +4,36 @@ The goal of Cluster Analysis is to group respondents (e.g, consumers) into segme
 
 Click the 'examples' radio button on the Data > Manage page and click 'Load examples' then choose the toothpaste  data from the Datasets dropdown. The data set contains information from 60 consumers who were asked to respond to six questions to determine their attitudes towards toothpaste. The scores shown for variables v1-v6 indicate the level of agreement with the statement indicated on a 7-point scale where 1 = strongly disagree and 7 = strongly agree.
 
-Once you have determined the appropriate number of clusters to extract using Hierarchical cluster analysis we use K-means cluster analysis to create the final segments. The main advantage of this algorithm is its flexibility and robustness in finding the most appropriate grouping of respondents. While Hierarchical clustering is a great way to determine the number of clusters it is generally inferior to K-means in forming the actual clusters. Using Hierarchical cluster analysis to select the number of segments, followed by K-means cluster analysis to create the final segments is the generally preferred method to cluster data in marketing.
+Once we have determined the appropriate number of clusters to extract using Hierarchical cluster analysis we use K-means to create the final segments. The main advantage of this algorithm is it's flexibility and robustness in finding the most appropriate grouping of respondents. Using Hierarchical cluster analysis to select the number of segments, followed by K-means cluster analysis to create the final segments is the default method to cluster data in marketing.
 
-The goal of Cluster Analysis is to group respondents (e.g, consumers) into segments based on needs, benefits, and/or behavior. The tool tries to achieve this goal by looking for respondents that are similar, putting them together in a cluster or segment, and separating them from other, dissimilar, respondents. The researcher will then compare the segments and provide a descriptive label for each (i.e., a name).
+The goal of Cluster Analysis is to group respondents (e.g, consumers) into segments based on needs, benefits, and/or behaviors. The tool tries to achieve this goal by looking for respondents that are similar, putting them together in a cluster or segment, and separating them from other, dissimilar, respondents. The researcher will then compare the segments and provide a descriptive label for each (i.e., a name).
 
-Select variables v1 through v6 in the Variables box and select 3 as the Number of clusters. 
+To apply K-means to the toothpaste data select variables v1 through v6 in the Variables box and select 3 as the number of clusters. In the Summary tab we use the table of ‘Cluster means’ to describe the individuals assigned to a segment. Each number in the table shows the average score for people in that segment for a variable. For example, segment 3 has an average score of 5.75 out of 7 on question v2. We are looking for either very high or very low mean values to help distinguish segments because we want to establish how one segment differs from the other segments. If there are no substantial differences in the mean value of a variable across different segments we conclude that variable is not very useful. By highlighting the variables that most clearly distinguish the different segments we can generate a name or label for the segment that describes who they are and where the segments differ from oneanother.
 
-In the R output we use the ‘Cluster means’ table to describe the group of individuals assigned to a segment
-The table contains information on the average score for a variable for people in that segment
-We look for either very high or very low mean values to help distinguish segments (i.e., how is one segment different from another segment?).
-If there are no substantial differences in the mean value of a variable across different segments that variable is not useful to differentiate the segments
-Highlight the variables that seems to most clearly distinguish the different segments. These variables will help us to generate a ‘name’ for the segment that describes who they are and to establish where the segments differ
+![kmeans toothpaste - summary](figures/kmeans_toothpaste_summary.png)
 
+It can be useful to visualize how well the segments are separated by plotting the data for each segment and variable. The figures shown are density plots. For variable v1 the clusters are nicely separated. The average response to the question 'It is important to buy a toothpaste that prevents cavities.' for segment 2 (green) is lower than for both segment 3 (blue) and segment 1 (pink). Segment 1, in turn stands out by it's high score on this question compared to the other two segments. For question v4 we see a different pattern. The average response to the question 'I prefer a toothpaste that freshens breath.' for segments 1 (green) and 2 (pink) is very similar as the plots are mostly overlapping. Segment 3 (blue), in turn stands out by it's high score on this question compared to the other two segments.
 
-![hcculs shopping - summary](figures/hcclus_toothpaste_summary.png)
+![kmeans shopping - plots ](figures/kmeans_toothpaste_plots.png)
 
-Segment 1: Cosmetic Brushers
-Segment 2: Uninvolved Brushers
-Segment 3: Therapeutic Brushers
+By reviewing the Cluster means table in the Summary tab and the density plots in the Plots tab we can derive the following labels: Segment 3 stands out with high scores on questions v2, v4, and v6. We could call them the 'Cosmetic brushers'. Segment 1 stands out with high scores on questions v1 and v3 and a low score on v5. As the clearly care a great deal about the health benefits of toothpaste we might call them the 'Therapeutic brushers'. Segment 2 scores low in v1 and v3 and high on v5, i.e., the care little about the health benefits of toothpaste. Since their scores for their scores for the cosmetics benefits are not high either but rather middle-of-the-road we could label them the 'Uninvolved brushers'.
 
+Once we have categorized the segments we can create a segment or cluster membership variable by clicking the 'Save cluster membership'. A new variable is added to the toothpaste data showing which respondents were assigned to which cluster (i.e., cluster membership). We can change the created cluster variable to show the descriptive labels above through the Data > Transform menu. Select the kclus3 variable in the Select column(s) box. Then from the Transform type dropdown select Recode. In the recode box type (or paste) the command below to recode and press return:
 
-Hierarchical cluster analysis starts with many segments, as many as there are respondents, and in stepwise (i.e., hierarchical) process adds the most similar respondents or groups together until only one segment is left. To determine the appropriate number of segments look for a 'jump' along the vertical axis of the Dendrogram. At that point two dissimilar segments have been joined. The measure along the vertical axis indicates of the level of heterogeneity within segments that have been formed. The purpose of clustering is to create homogeneous groups of individuals so we want to avoid creating a heterogeneous segment. Since the 'jump' in heterogeneity occurs when we go from 3 to 2 segments we choose 3 segments (i.e., we avoid creating a heterogeneous segment).
+	1 = 'Therapeutic'; 2 = 'Uninvolved'; 3 = 'Cosmetic'
 
-![hcculs shopping - plots - density](figures/hcclus_toothpaste_density.png)
+We can profile these segments with demographic data using cross-tabs (e.g., gender vs segment membership). Go to EDAT > Cross-tabs. Our null hypothesis is: 
 
+	There is no relationship between gender and segment membership
 
-We can visualize how well the segments are separated by plotting histograms for each segment and variable
-
-Do you reach the same conclusion based on the plots compared to the Cluster means table on the previous slide?
-
-
-A new variable was added to the toothpaste data file showing who is in which cluster (i.e., cluster membership).
-
-
-	Select ‘RadyMenu’
-
-	From the ‘Manipulate data’ submenu select ‘Recode’
-
-	Note: If you prefer you can recode variables in Excel and copy-and-paste the result back into the Dataviewer. To do this first click on a column header in Dataviewer, right click and choose ‘Paste into new’. Click on the same column header, right click and choose ‘Paste’.
-
-	Choose the kclus1 variable that was added to the toothpaste dataset after we used K-means cluster analysis and put it in the ‘Variables to Recode’ box.
-
-	Then press ‘Define Recode’
-
-	In the ‘Value’ box first type 1 and ‘Cosmetic’ into ‘into’ box. Then press ‘Add’. Then enter 2 and ‘Uninvolved’ and press ‘Add’. Finally, enter 3 and ‘Therapeutic’ followed by ‘Add’. Then press ‘OK’
-
-	Below the command that R creates for us to do the recode
-
-
-
-We can profile these segments with demographic data using cross-tab analysis (e.g., gender vs segment membership). Go to RadyMenu > EDAT > Cross-tabs (Raw).
-Null hypothesis: 
-There is no relationship between gender and segment membership
 Alternative hypothesis: 
-There is a relationship between gender and segment membership
 
+	There is a relationship between gender and segment membership
 
-The ‘Uninvolved’ segment has more men, relative to what we would expect under the no-association model. If we are willing to use an alpha value of .10 rather than .05 we could also state that there are fewer women in the ‘Uninvolved’ segment (standardized residuals > 1.64).
+In the summary tab we see there is a significant association between these two variables. The p-value is smaller than .001 and there are no cells with expected values below 5. 
 
+![kmeans toothpaste - crosstab summary](figures/kmeans_toothpaste_crosstab_summary.png)
 
-If we are willing to use an alpha value of .10 we could also state that the ‘Cosmetics’ segment is composed of more women, relative to what we would expect under the no-association model.
+For a more detailed view of the association we go to the Plots tab. Select the 'Deviation (standardized)' plot. The ‘Uninvolved’ segment has more men than we would expect under the null of no-association. If we are willing to use an alpha value of .10 we could also state that the ‘Cosmetics’ segment is composed of more women than we would expect under the null of no-association. In sum, in these data men are more likely to be in the 'Uninvolved brushers' segment and women are more likely to be in the 'Cosmetic brushers' segment.
 
-If you want some more practice open the ‘shopping.rda’ data set and see if you get the same results as pasted below. Did I choose the right number of segments? Why (not)? Questions used to measure shopping additudes are listed on the next slide. 
-
-Again we can visualize how well the segments are separated by plotting histograms for each segment and variable
-
-What segment names would you assign?
+![kmeans shopping - plots crosstab plots](figures/kmeans_toothpaste_crosstab_plots.png)

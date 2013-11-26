@@ -23,4 +23,6 @@ https://groups.google.com/forum/?fromgroups=#!searchin/shiny-discuss/dynamic$20f
 https://groups.google.com/forum/#!topic/shiny-discuss/hzYGDJQF_e4
 http://vita.had.co.nz/papers/tidy-data.pdf
 
-Use data-tables once Shiny .8 hits CRAN https://github.com/rstudio/shiny-examples and http://glimmer.rstudio.com/yihui/12_datatables/
+Create the radyant_win and update_win files when first installing. Can use Rhome to find where R is installed.
+
+Merge and join in dplyr / plyr to link data.

@@ -56,9 +56,17 @@ To use the recode feature select the variable you want to change and choose 'Rec
 
 Choose 'Rename' from the 'Transformation type' dropdown, select one or more variables and enter new names for them in the rename box shown. Separate each name by a ','. Press return to see the variables with their new names on screen and  press 'Save changes' to alter the variable names in the original data.
 
-#### Remove
+#### Remove columns
 
-Choose 'Remove' from the 'Transformation type' dropdown and select one or more variables to remove. Press 'Save changes' to remove the variables from the original data. Note that this action cannot be undone. If you want to the original variables back you will have to reload the data through the Data > Manage page.
+Choose 'Remove columns' from the 'Transformation type' dropdown and select one or more variables to remove. Press 'Save changes' to remove the variables from the original data. Note that this action cannot be undone. If you want to the original variables back you will have to reload the data through the Data > Manage page.
+
+#### Remove missing
+
+Choose 'Remove missing' from the 'Transformation type' dropdown to remove missing values. Press 'Save changes' to remove all rows with missing values from the data. If missing values were present you will see the number of observations in the data summary change (i.e., the value of n changes). Note that this action cannot be undone. If you want these rows back you will have to reload the data through the Data > Manage page.
+
+#### Subset
+
+Choose 'Subset' from the 'Transformation type' dropdown to select (or omit) specific sets of rows from the data. You can use > and < signs and even combine filter commands. For example, x > 3 & y == 2 would select only those rows for which the variable x has values larger than 3 __and__ for which y has values equal to 2. Type your filter statement in the Subset box and press enter to see the result on screen. You should see the number of observations in the data summary change (i.e., the value of n changes). Press 'Save changes' to keep only the rows you want in the data. Note that this action cannot be undone. If you want these rows back you will have to reload the data through the Data > Manage page.
 
 #### Transformations available through the Change function
 

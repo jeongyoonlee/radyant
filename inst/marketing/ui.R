@@ -1,7 +1,6 @@
 shinyUI(
   pageWithSidebar(
 
-
     # Using a navbar rather than headerPanel to display app title
     headerPanel(''),
     sidebarPanel(
@@ -28,6 +27,7 @@ shinyUI(
     mainPanel(
       conditionalPanel(condition = "input.datasets != ''",
         conditionalPanel(condition = "input.tool == 'data'", 
+
           uiOutput("ui_data_tabs")
         ),
         conditionalPanel(condition = "input.tool != 'data'",

@@ -61,7 +61,8 @@ preFactor <- reactive({
 	ret_text <- "This analysis requires a multiple variables of type numeric or integer. Please select another dataset."
 	if(is.null(inChecker(c(input$preFactor_vars)))) return(ret_text)
 
-	dat <- getdata()[,input$preFactor_vars]
+	dat <- na.omit( getdata()[,input$preFactor_vars] )
+
 	if(nrow(dat) < ncol(dat)) return("Data has more variables than observations. Please reduce the number of variables.")
 
 	btest <- cortest.bartlett(cor(dat), nrow(dat))
@@ -218,7 +219,7 @@ fullFactor <- reactive({
 	ret_text <- "This analysis requires a multiple variables of type numeric or integer. Please select another dataset."
 	if(is.null(inChecker(c(input$factor_vars)))) return(ret_text)
 
-	dat <- getdata()[,input$factor_vars]
+	dat <- na.omit( getdata()[,input$factor_vars] )
 	if(nrow(dat) < ncol(dat)) return("Data has more variables than observations. Please reduce the number of variables.")
 
 	nrFac <- max(1,as.numeric(input$fac_number), na.rm = TRUE)

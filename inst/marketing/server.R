@@ -1,9 +1,10 @@
 # only write if running on developer computer
-# dev_comp = FALSE
 if(file.exists("/Users/vnijs/radyant")) {
 	dbox_remote <- file.info(list.files(recursive = TRUE, include.dirs = TRUE))
 	save(dbox_remote, file = "dbox_remote.rda")
-	# dev_comp = TRUE
+	dev_comp = TRUE
+} else {
+	dev_comp = FALSE
 }
 
 shinyServer(function(input, output, session) {
@@ -40,7 +41,14 @@ shinyServer(function(input, output, session) {
       # tabPanel("View", htmlOutput("dataviewer")),
       tabPanel("View", dataTableOutput("dataviewer")),
 
-      tabPanel("Visualize", plotOutput("visualize", width = "100%", height = "100%")),
+      tabPanel("Visualize", 
+        conditionalPanel(condition="input.viz_multiple == true && $('html').hasClass('shiny-busy')",
+          tags$img(src="loading_circle.gif",height=100,width=100)
+        ), 
+        conditionalPanel(condition="!$('html').hasClass('shiny-busy')",
+	        plotOutput("visualize", width = "100%", height = "100%")
+	      )
+      ),
       tabPanel("Explore", verbatimTextOutput("expl_data"), plotOutput("expl_viz", width = "100%", height = "100%")),
       # tabPanel("Merge", #   HTML('<label>Merge data.<br>In progress. Check back soon.</label>') # ),
       tabPanel("Transform", htmlOutput("transform_data"), verbatimTextOutput("transform_summary")),
@@ -100,7 +108,16 @@ shinyServer(function(input, output, session) {
   	if(is(tabs, 'try-error')) {
   		return(tabsetPanel(id = "analysistabs",
 	  	  tabPanel("Summary", HTML(fancyTableOutput()), verbatimTextOutput("summary")),
-	    	tabPanel("Plots", plotOutput("plots", height = "100%")))
+	    	tabPanel("Plots", 
+	    		# plotOutput("plots", height = "100%")))
+
+	      	conditionalPanel(condition="$('html').hasClass('shiny-busy')",
+  	     		tags$img(src="loading_circle.gif",height=100,width=100)
+	    	  ), 
+     	  	conditionalPanel(condition="!$('html').hasClass('shiny-busy')",
+	    	 		plotOutput("plots", height = "100%")))
+	   			)
+
 	    	# tabPanel("Help", includeHTML(paste0("tools/help/",input$tool,".html"))))
 		  )
 	  } else {
@@ -130,7 +147,7 @@ shinyServer(function(input, output, session) {
 
 	# From Joe Cheng's post at:
 	# https://groups.google.com/forum/?fromgroups=#!searchin/shiny-discuss/close$20r/shiny-discuss/JptpzKxLuvU/boGBwwI3SjIJ
-	# session$onSessionEnded(function() {
- #  	q("ask")
- #  })
+	session$onSessionEnded(function() {
+		if(!dev_comp) q("no")
+  })
 })

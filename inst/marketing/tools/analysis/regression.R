@@ -91,7 +91,7 @@ correlation <- reactive({
 	if(is.null(vars) || (length(vars) < 2)) return("Please select two or more variables")
 	if(sum(vars %in% varnames()) != length(vars))  return("")
 
-	dat <- getdata()[,vars]
+	dat <- na.omit( getdata()[,vars] )
 	dat <- data.frame(lapply(dat,as.numeric))
 
 	nc <- ncol(dat)

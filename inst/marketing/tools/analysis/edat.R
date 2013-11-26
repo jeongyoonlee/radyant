@@ -173,6 +173,8 @@ compareMeans <- reactive({
 	# dat <- na.omit( getdata()[,c(var1,var2)] )
 	dat <- getdata()[,c(var1,var2)]
 
+	dat <- na.omit(dat)
+
 	if(!is.factor(dat[,var1])) {
     # updateRadioButtons(session = session, inputId = "cm_paired", label = "", c("Paired" = "paired", "Independent" = "indep"), selected = "Paired")
 		cm_paired <- TRUE
@@ -228,7 +230,7 @@ summary.singleProp <- function(result) {
 plot.singleProp <- function(result) {
 
 	var <- input$sp_var
-	dat <- getdata()[,var, drop = FALSE]
+	dat <- na.omit( getdata()[,var, drop = FALSE] )
 	p <- ggplot(dat, aes_string(x = var, fill = var)) + geom_histogram(alpha=.3) +
  			ggtitle(paste("Single proportion:", var))
 	print(p)
@@ -240,7 +242,7 @@ singleProp <- reactive({
 	if(is.null(input$sp_var)) return(ret_text)
 	if(is.null(inChecker(c(input$sp_var)))) return(ret_text)
 
-	dat <- getdata()[,input$sp_var]
+	dat <- na.omit( getdata()[,input$sp_var] )
 	lev <- levels(dat)
 	if(length(lev) >2) return("The selected variable has more than two levels. Try another variable or a cross-tab.")
 	prop <- sum(dat == rev(lev)[1])
@@ -291,7 +293,7 @@ summary.compareProps <- function(result) {
 
 plot.compareProps <- function(result) {
 
-	dat <- getdata()[,c(input$cp_var1,input$cp_var2)]
+	dat <- na.omit( getdata()[,c(input$cp_var1,input$cp_var2)] )
 	p <- ggplot(dat, aes_string(x = input$cp_var1, fill = input$cp_var2)) + geom_bar(alpha=.3, position = "fill") +
 				labs(list(title = paste("Comparing proportions of ",input$cp_var2,"$",levels(dat[,1])[1], " across levels of ",input$cp_var1, sep = ""), 
 					x = paste("Factor levels for ", input$cp_var1), y = "Count", fill = input$cp_var2))
@@ -308,7 +310,7 @@ compareProps <- reactive({
 	var1 <- input$cp_var1
 	var2 <- input$cp_var2
 
-	dat <- getdata()[,c(var1,var2)]
+	dat <- na.omit( getdata()[,c(var1,var2)] )
 	lev1 <- levels(dat[,1])
 	lev2 <- levels(dat[,2])
 	if(length(lev2) >2) return("The selected variable has more than two levels. Try another variable or a cross-tab.")
@@ -402,7 +404,7 @@ summary.crosstab <- function(result) {
 
 plot.crosstab <- function(result) {
 
-	dat <- getdata()[,c(input$ct_var1,input$ct_var2)]
+	dat <- na.omit( getdata()[,c(input$ct_var1,input$ct_var2)] )
 	plots <- list()
 	v1 <- input$ct_var1
 	v2 <- input$ct_var2
@@ -468,7 +470,7 @@ crosstab <- reactive({
   var1 <- input$ct_var1
   var2 <- input$ct_var2
 
-  dat <- getdata()[,c(var1,var2)]
+  dat <- na.omit( getdata()[,c(var1,var2)] )
 
 	dnn = c(paste("Group(",input$ct_var1,")",sep = ""), paste("Variable(",input$ct_var2,")",sep = ""))
 	tab <- table(dat[,input$ct_var1], dat[,input$ct_var2], dnn = dnn)

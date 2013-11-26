@@ -48,5 +48,4 @@ runApp(list(
 # the url parse thing also seems to offer the opportunity to (re)set a bunch of parameters in the input 
 # list
 
-
 example(mean)

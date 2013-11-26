@@ -73,7 +73,10 @@ hclustering <- reactive({
 	ret_text <- "This analysis requires variables of type numeric or integer. Please select another dataset."
 	if(is.null(inChecker(c(input$hc_vars)))) return(ret_text)
 
-	dat <- scale( getdata()[,input$hc_vars] ) 					# standardizing the data
+	dat <- na.omit( getdata()[,input$hc_vars] ) 					# omitting missing values
+
+	dat <- scale(dat) 					# standardizing the data
+
 	if(input$hc_dist == "sq.euclidian") {
 		dist.data <- dist(dat, method = "euclidean")^2
 	} else {
@@ -154,7 +157,7 @@ summary.kmeansClustering <- function(result) {
 	
 	# print(result$centers, digits = 3)
 
-	dat <- getdata()[,input$km_vars, drop = FALSE]
+	dat <- na.omit( getdata()[,input$km_vars, drop = FALSE] )
 	cvar <- as.factor(result$cluster)
 	dat <- cbind(cvar,dat)
 	cnt <- ddply(dat, c("cvar"), colwise(mean))
@@ -182,7 +185,7 @@ summary.kmeansClustering <- function(result) {
 
 plot.kmeansClustering <- function(result) {
 	# several things to work on here to clean-up the plots
-	dat <- getdata()[,input$km_vars, drop = FALSE]
+	dat <- na.omit( getdata()[,input$km_vars, drop = FALSE] )
 	dat$clusvar <- as.factor(result$cluster)
 
 	plots <- list()
@@ -202,7 +205,10 @@ kmeansClustering <- reactive({
 	if(is.null(inChecker(c(input$km_vars)))) return(ret_text)
 
 	set.seed(input$km_seed)
-	dat <- scale( getdata()[,input$km_vars] )
+
+	dat <- na.omit( getdata()[,input$km_vars] ) 					# omitting missing values
+
+	dat <- scale( dat )
 	# dat <- getdata()[,input$km_vars]
 
 	if(input$km_hcinit) {
@@ -222,7 +228,13 @@ kmeansClustering <- reactive({
  
 hinitclustering <- reactive({
 	if(is.null(input$km_vars)) return("Please select one or more variables")
-	dat <- getdata()[,input$km_vars]
+
+	# dat <- getdata()[,input$km_vars]
+	# dat <- na.omit( getdata()[,input$km_vars] ) 					# omitting missing values
+
+	dat <- na.omit( getdata()[,input$km_vars] ) 					# omitting missing values
+	dat <- scale(dat) 					# standardizing the data
+
 	if(input$km_dist == "sq.euclidian") {
 		dist.data <- dist(dat, method = "euclidean")^2
 	} else {

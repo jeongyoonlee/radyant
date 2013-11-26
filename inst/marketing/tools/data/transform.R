@@ -81,7 +81,9 @@ trans_options <- list("None" = "", "Log" = "log", "Square" = "sq", "Square-root"
 	"Invert" = "inv", "Median split" = "msp", "Deciles" = "dec", "As factor" = "fct",  "As number" = "num", "As integer" = "int", "As character" = "ch",
 	"As date (mdy)" = "d_mdy", "As date (dmy)" = "d_dmy", "As date (ymd)" = "d_ymd")
 
-trans_types <- list("None" = "", "Change" = "change", "Create" = "create", "Clipboard" = "clip", "Recode" = "recode", "Rename" = "rename", "Reorder columns" = "reorder_cols", "Reorder levels" = "reorder_levs", "Remove" = "remove")
+trans_types <- list("None" = "", "Change" = "change", "Create" = "create", "Clipboard" = "clip", "Recode" = "recode", "Rename" = "rename", 
+	"Reorder columns" = "reorder_cols", "Reorder levels" = "reorder_levs", "Remove columns" = "remove", "Remove missing" = "na.remove", 
+	"Subset" = "sub_filter")
 
 ui_Transform <- function() {
 	# Inspired by Ian Fellow's transform ui in JGR/Deducer
@@ -112,6 +114,10 @@ ui_Transform <- function() {
     conditionalPanel(condition = "input.tr_changeType == 'rename'",
 	   	returnTextInput("tr_rename", "Rename (separate by ','):", '')
 	   	# textInput("tr_rename", "Rename (separate by ','):", '')
+    ),
+
+    conditionalPanel(condition = "input.tr_changeType == 'sub_filter'",
+      returnTextInput("tr_subset", "Subset (e.g., mpg > 20 & vs == 1)", '')
     ),
 
     # actionButton("transfix", "Edit variables in place") # using the 'fix(mtcars)' to edit the data 'inplace'. Looks great from R-ui, not so great from Rstudio
@@ -162,8 +168,26 @@ transform_main <- reactive({
  	  return(dat[,ordVars, drop = FALSE])
   }
 
-	# if(input$tr_changeType == "") {
+	if(input$tr_changeType == 'na.remove') {
+ 	  return(na.omit( dat ))
+  }
 
+	if(input$tr_changeType == 'sub_filter') {
+	  if(input$tr_subset != '') {
+	    selcom <- input$tr_subset
+  	  selcom <- gsub(" ", "", selcom)
+
+    	seldat <- try(do.call(subset, list(dat,parse(text = selcom))), silent = TRUE)
+
+    	if(!is(seldat, 'try-error')) {
+      	if(is.data.frame(seldat)) {
+        	return(seldat)
+      	}
+    	}
+  	}
+  }
+  
+	# if(input$tr_changeType == "") {
 	if(!is.null(input$tr_columns)) {
 
 		if(!all(input$tr_columns %in% colnames(dat))) return()
@@ -174,7 +198,7 @@ transform_main <- reactive({
 			colnames(dat) <- cn
 		}
 	} else {
-		if(input$tr_changeType != "") return()
+		if(input$tr_changeType != "" && input$tr_changeType != "sub_filter") return()
 	}
 
 
@@ -310,6 +334,10 @@ observe({
 
 		if(input$tr_changeType == 'remove') {
 			changedata(addColName = colnames(dat))
+		} else if(input$tr_changeType == 'na.remove') {
+	  	values[[input$datasets]] <- na.omit( values[[input$datasets]] )
+		} else if(input$tr_changeType == 'sub_filter') {
+	  	values[[input$datasets]] <- dat
 		} else if(input$tr_changeType == 'rename') {
 			changedata_names(input$tr_columns, colnames(dat))
 		} else if(input$tr_changeType == 'reorder_cols') {
