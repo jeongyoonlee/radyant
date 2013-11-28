@@ -18,6 +18,10 @@ shinyServer(function(input, output, session) {
 
 	# find the appropriate UI
 	output$ui_finder <- renderUI({
+
+		# alternative approach to ui_finder?
+		# https://groups.google.com/forum/#!topic/shiny-discuss/s68AJCFsvxQ/discussion
+
   	if(input$tool == "data") {
   		if(!is.null(input$datatabs)) get(paste0('ui_',input$datatabs))()
 		} else {
