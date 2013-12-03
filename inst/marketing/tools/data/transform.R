@@ -198,9 +198,9 @@ transform_main <- reactive({
 			colnames(dat) <- cn
 		}
 	} else {
-		if(input$tr_changeType != "" && input$tr_changeType != "sub_filter") return()
+		# if(input$tr_changeType != "" && input$tr_changeType != "sub_filter") return()
+		if(!input$tr_changeType %in% c("", "sub_filter", "create")) return()
 	}
-
 
 	if(!is.null(input$tr_columns) & input$tr_changeType == 'reorder_levs') {
     if(!is.null(input$tr_reorder_levs)) {
@@ -265,7 +265,10 @@ transform_main <- reactive({
 				cn <- c(colnames(dat),colnames(newvar))
 				dat <- cbind(dat,newvar)
 				colnames(dat) <- cn
-			} else if(is.null(input$tr_columns)) {
+
+				head(dat)
+			# } else if(is.null(input$tr_columns)) {
+			} else {
 				# the 'create' command did not compile so if there were
 				# no variables selected show ... nothing
 				# print(paste0("Create command:", recom, "did not create a new variable. Please try again."))
@@ -305,7 +308,8 @@ output$transform_summary <- renderPrint({
 	isFct <- sapply(dat, is.factor)
 	isNum <- sapply(dat, is.numeric)
 	isDate <- sapply(dat, is.Date)
-	# isChar <- sapply(getdata(), is.character)
+	isChar <- sapply(dat, is.character)
+	isLogic <- sapply(dat, is.logical)
 
 	if(sum(isNum) > 0) {
 		cat("\nSummarize numeric variables:\n")
@@ -320,9 +324,16 @@ output$transform_summary <- renderPrint({
 		cat("\nSummarize date variables:\n")
 		print(summary(dat[,isDate]))
 	}
+	if(sum(isChar) > 0) {
+		cat("\nSummarize character variables:\n")
+		print(table(dat[,isChar]))
+	}
+	if(sum(isLogic) > 0) {
+		cat("\nSummarize logical variables:\n")
+		print(table(dat[,isLogic]))
+	}
 
 	# print(getwd())
-	
 })
 
 observe({

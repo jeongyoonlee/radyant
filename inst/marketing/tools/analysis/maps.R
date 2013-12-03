@@ -123,7 +123,7 @@ plot.mds <- function(result) {
 
 mds <- reactive({
 
-	ret_text <- "This analysis requires two id-variables of type character and a measure of dissimilarity of type numeric or interval. Please select another dataset."
+	ret_text <- "This analysis requires two id-variables of type character\nand a measure of dissimilarity of type numeric or interval.\nPlease select another dataset."
 	if(is.null(input$mds_id2) || is.null(input$mds_dis)) return(ret_text)
 
 	dat <- getdata()

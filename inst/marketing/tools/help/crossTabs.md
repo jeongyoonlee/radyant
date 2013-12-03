@@ -1,4 +1,4 @@
-Cross-tab (or contingency table) analysis is used to evaluate if two nominally scaled variables are associated. 
+ourcross-tab (or contingency table) analysis is used to evaluate if two nominally scaled variables are associated. 
 
 #### Example
 
@@ -11,7 +11,8 @@ We will examine if there is a relationship between income level and choice of ne
 
 If the null-hypothesis is rejected we can investigate which cell(s) contribute to the hypothesized association. In Radyant (EDAT > Cross-tab) we choose Income as the grouping factor and Newspaper as the second factor. First we compare the observed and expected frequencies. The expected frequencies are calculated using H0 (i.e., no association) as (Row total x Column Total) /  Overall Total.
 
-![cross-tab - summary](figures/CrossTabSummary.png)
+
+![cross-tab - summary](figures/crossTabSummary.png)
 
 The Pearson chi-squared test evaluates if we can reject the null-hypothesis that the two variables are independent. It does so by comparing the observed frequencies (i.e., what we actually see in the data) to the expected frequencies (i.e., what we would expect to see if the two variables were independent). If there are big differences between the table of expected and observed frequencies the chi-square value will be 'large'. In order to determine if the chi-square can be considered large we first determine the degrees of freedom (df). In particular: df = (# rows - 1) x (# columns - 1). In a 2X 2 table, we have (2-1) X (2-1) = 1 df. The output in the summary tab shows the value of the chi-square statistic, the associated df and the p-value associated with the test. We also see the contribution from each cells to the overall chi-square measure. 
 
@@ -20,6 +21,6 @@ Remember to check the expected values: None of of the cells should have an expec
 
 In addition to the numerical output provided in the Summary tab we can evaluate the hypothesis visually (see Plots tab). We choose the same variables as before. However, we will plot the the the standardized deviations. This measure is calculated as O - E / sqrt(E), i.e., a score of how different the observed and expected frequencies in one cell in our table are. When a cell’s standardized deviation is greater than 1.96 (in absolute value) we can say the cell has a significant deviation from the model of independence (or no association).
 
-![cross-tab - plots](figures/CrossTabPlots.png)
+![cross-tab - plots](figures/crossTabPlots.png)
 
 In the plots we see that all cells contribute to the association between income and readership as the standardized deviations are larger than 1.96 in absolute value (i.e., the bars extend beyond the dotted lines in the plot).

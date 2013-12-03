@@ -130,7 +130,7 @@ plot.pmap <- function(result) {
 
 pmap <- reactive({
 
-	ret_text <- "This analysis requires a brand variables of type character and multiple attribute variables of type numeric or integer. Please select another dataset."
+	ret_text <- "This analysis requires a brand variable of type character\nand multiple attribute variables of type numeric or integer.\nPlease select another dataset."
 	if(is.null(input$pmap_brand)) return(ret_text)
 	if(is.null(inChecker(c(input$pmap_brand, input$pmap_attr)))) return(ret_text)
 	if(length(input$pmap_attr) < 2) return("Please select two or more attribute variables")
